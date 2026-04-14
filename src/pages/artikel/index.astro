@@ -1,0 +1,171 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+
+// Base URL untuk gambar (tanpa /api, karena upload URL relatif ke root domain)
+const API_BACKEND_URL = import.meta.env.API_BACKEND_URL ?? '';
+const API_SECRET_KEY = import.meta.env.API_SECRET_KEY ?? '';
+const MEDIA_BASE_URL = API_BACKEND_URL.replace(/\/api$/, '');
+
+// Fetch artikel dari Strapi (SSR)
+let articles = [];
+let fetchError = false;
+
+try {
+  if (API_BACKEND_URL) {
+    const res = await fetch(`${API_BACKEND_URL}/articles?populate=thumbnail`, {
+      headers: API_SECRET_KEY ? { Authorization: `Bearer ${API_SECRET_KEY}` } : {},
+    });
+    if (res.ok) {
+      const json = await res.json();
+      // Strapi v5: { data: [...], meta: { pagination: {...} } }
+      articles = Array.isArray(json.data) ? json.data : [];
+    } else {
+      fetchError = true;
+    }
+  }
+} catch {
+  fetchError = true;
+}
+
+/**
+ * Mengambil URL thumbnail terbaik dari object thumbnail Strapi.
+ * Prioritas: medium → small → large → original
+ */
+function getThumbnailUrl(thumbnail) {
+  if (!thumbnail) return null;
+  const mediaUrl =
+    thumbnail.formats?.medium?.url ??
+    thumbnail.formats?.small?.url ??
+    thumbnail.formats?.large?.url ??
+    thumbnail.url;
+  return mediaUrl ? `${MEDIA_BASE_URL}${mediaUrl}` : null;
+}
+
+/**
+ * Mengambil ringkasan teks dari block content Strapi.
+ */
+function getSummary(content, maxLength = 120) {
+  if (!Array.isArray(content)) return '';
+  const text = content
+    .flatMap((block) => block.children ?? [])
+    .filter((c) => c.type === 'text')
+    .map((c) => c.text)
+    .join(' ')
+    .trim();
+  return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
+}
+---
+
+<MainLayout
+  title="Artikel Kesehatan"
+  description="Baca artikel dan tips kesehatan hewan peliharaan dari dokter hewan berpengalaman DFreeze Vet Clinic."
+>
+  <!-- Header -->
+  <section class="py-14 border-b border-slate-100">
+    <div class="max-w-3xl">
+      <span class="text-blue-600 text-sm font-semibold uppercase tracking-widest">Blog & Edukasi</span>
+      <h1 class="mt-3 text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight">
+        Artikel Kesehatan Hewan
+      </h1>
+      <p class="mt-4 text-lg text-slate-500 leading-relaxed">
+        Tips, panduan, dan informasi kesehatan terkini dari tim dokter hewan profesional kami untuk membantu Anda merawat hewan peliharaan.
+      </p>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <section class="py-14">
+    {fetchError && (
+      <div class="rounded-2xl bg-amber-50 border border-amber-200 p-6 flex items-start gap-4 mb-10">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 mt-0.5">
+          <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+          <path d="M12 9v4"/><path d="M12 17h.01"/>
+        </svg>
+        <div>
+          <p class="font-semibold text-amber-800">Tidak dapat memuat artikel</p>
+          <p class="text-sm text-amber-700 mt-1">Layanan artikel sedang tidak tersedia. Silakan coba lagi nanti.</p>
+        </div>
+      </div>
+    )}
+
+    {articles.length === 0 && !fetchError && (
+      <div class="text-center py-20">
+        <div class="w-20 h-20 mx-auto rounded-full bg-slate-100 flex items-center justify-center mb-5">
+          <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-slate-700">Belum ada artikel</h3>
+        <p class="text-slate-400 mt-2">Artikel akan segera hadir. Pantau terus!</p>
+      </div>
+    )}
+
+    {articles.length > 0 && (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+        {articles.map((article) => {
+          const thumbnailUrl = getThumbnailUrl(article.thumbnail);
+          const summary = getSummary(article.content);
+          const slug = article.documentId; // Strapi v5: gunakan documentId sebagai slug
+          const publishedDate = article.publishedAt
+            ? new Date(article.publishedAt).toLocaleDateString('id-ID', {
+                year: 'numeric', month: 'long', day: 'numeric',
+              })
+            : null;
+
+          return (
+            <a
+              href={`/artikel/${slug}`}
+              class="group block bg-white rounded-2xl border border-slate-200 overflow-hidden hover:border-blue-300 hover:shadow-xl transition-all duration-300"
+            >
+              {/* Thumbnail */}
+              <div class="aspect-video overflow-hidden bg-gradient-to-br from-blue-50 to-sky-100">
+                {thumbnailUrl ? (
+                  <img
+                    src={thumbnailUrl}
+                    alt={article.thumbnail?.alternativeText ?? article.title ?? 'Artikel'}
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div class="w-full h-full flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                    </svg>
+                  </div>
+                )}
+              </div>
+
+              {/* Card Body */}
+              <div class="p-6">
+                {article.category && (
+                  <span class="inline-block text-xs font-medium text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full mb-3 capitalize">
+                    {article.category}
+                  </span>
+                )}
+                <h2 class="font-bold text-slate-900 text-lg leading-snug group-hover:text-blue-700 transition-colors line-clamp-2">
+                  {article.title ?? 'Tanpa Judul'}
+                </h2>
+                {summary && (
+                  <p class="mt-2 text-sm text-slate-500 leading-relaxed line-clamp-3">
+                    {summary}
+                  </p>
+                )}
+                <div class="mt-4 flex items-center justify-between gap-2">
+                  {publishedDate && (
+                    <time class="text-xs text-slate-400">{publishedDate}</time>
+                  )}
+                  <span class="text-blue-600 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all ml-auto shrink-0">
+                    Baca
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    )}
+  </section>
+</MainLayout>
