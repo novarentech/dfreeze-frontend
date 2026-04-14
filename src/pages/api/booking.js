@@ -14,8 +14,8 @@ export async function POST({ request }) {
       );
     }
 
-    const apiUrl = import.meta.env.API_BACKEND_URL;
-    const apiKey = import.meta.env.API_SECRET_KEY;
+    const apiUrl = process.env.API_BACKEND_URL;
+    const apiKey = process.env.API_SECRET_KEY;
 
     if (!apiUrl) {
       return new Response(

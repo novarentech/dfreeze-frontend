@@ -2,8 +2,8 @@
 import MainLayout from '../../layouts/MainLayout.astro';
 
 // Base URL untuk gambar (tanpa /api, karena upload URL relatif ke root domain)
-const API_BACKEND_URL = import.meta.env.API_BACKEND_URL ?? '';
-const API_SECRET_KEY = import.meta.env.API_SECRET_KEY ?? '';
+const API_BACKEND_URL = process.env.API_BACKEND_URL ?? '';
+const API_SECRET_KEY = process.env.API_SECRET_KEY ?? '';
 const MEDIA_BASE_URL = API_BACKEND_URL.replace(/\/api$/, '');
 
 // Fetch artikel dari Strapi (SSR)

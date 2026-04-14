@@ -4,8 +4,8 @@ import { renderStrapiBlocks } from '../../lib/strapi.js';
 
 const { slug } = Astro.params; // slug = documentId dari Strapi
 
-const API_BACKEND_URL = import.meta.env.API_BACKEND_URL ?? '';
-const API_SECRET_KEY = import.meta.env.API_SECRET_KEY ?? '';
+const API_BACKEND_URL = process.env.API_BACKEND_URL ?? '';
+const API_SECRET_KEY = process.env.API_SECRET_KEY ?? '';
 const MEDIA_BASE_URL = API_BACKEND_URL.replace(/\/api$/, '');
 
 let article = null;
