@@ -3,7 +3,7 @@
  * @param {Array} blocks - Array block dari field content Strapi
  * @returns {string} - HTML string
  */
-export function renderStrapiBlocks(blocks) {
+export function renderStrapiBlocks(blocks: any[]): string {
   if (!Array.isArray(blocks)) return '';
 
   return blocks
@@ -11,7 +11,7 @@ export function renderStrapiBlocks(blocks) {
     .join('');
 }
 
-function escapeHtml(text) {
+function escapeHtml(text: any): string {
   return String(text)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -20,12 +20,12 @@ function escapeHtml(text) {
     .replace(/'/g, '&#039;');
 }
 
-function renderChildren(children) {
+function renderChildren(children: any[]): string {
   if (!Array.isArray(children)) return '';
   return children.map((child) => renderInline(child)).join('');
 }
 
-function renderInline(node) {
+function renderInline(node: any): string {
   if (!node) return '';
 
   // Teks biasa
@@ -49,7 +49,7 @@ function renderInline(node) {
   return '';
 }
 
-function renderBlock(block) {
+function renderBlock(block: any): string {
   if (!block) return '';
 
   switch (block.type) {
