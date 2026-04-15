@@ -2,7 +2,7 @@
 export const prerender = false;
 
 import MainLayout from '../../layouts/MainLayout.astro';
-import { renderStrapiBlocks } from '../../lib/utils/strapi.js';
+import { BlocksRenderer } from '@strapi/blocks-react-renderer';
 import { getArticleBySlug } from '../../lib/api/articles';
 import { getThumbnailUrl } from "../../lib/utils/media";
 
@@ -26,8 +26,6 @@ if (!article) {
 }
 
 const thumbnailUrl = getThumbnailUrl(article.thumbnail);
-
-const contentHtml = renderStrapiBlocks(article.content);
 
 const publishedDate = article.publishedAt
   ? new Date(article.publishedAt).toLocaleDateString('id-ID', {
@@ -95,7 +93,7 @@ const publishedDate = article.publishedAt
     )}
 
     <!-- Content dari Strapi blocks -->
-    {contentHtml ? (
+    {article.content ? (
       <div
         class="prose prose-slate prose-lg max-w-none
           prose-headings:font-bold prose-headings:text-slate-900
@@ -108,8 +106,9 @@ const publishedDate = article.publishedAt
           prose-ul:list-disc prose-ol:list-decimal
           prose-li:text-slate-700
           prose-strong:text-slate-900 prose-strong:font-semibold"
-        set:html={contentHtml}
-      />
+      >
+        <BlocksRenderer content={article.content} />
+      </div>
     ) : (
       <p class="text-slate-400 italic">Konten artikel tidak tersedia.</p>
     )}
