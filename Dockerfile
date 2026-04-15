@@ -24,11 +24,12 @@ ENV HOST=0.0.0.0
 ENV PORT=4321
 
 RUN addgroup -S app && adduser -S app -G app
-USER app
 
-COPY --from=builder /app/dist/server ./server
-COPY --from=builder /app/dist/client ./client
-COPY --from=deps /app/node_modules ./node_modules
+COPY --chown=app:app --from=builder /app/dist/server ./server
+COPY --chown=app:app --from=builder /app/dist/client ./client
+COPY --chown=app:app --from=deps /app/node_modules ./node_modules
+
+USER app
 
 EXPOSE 4321
 

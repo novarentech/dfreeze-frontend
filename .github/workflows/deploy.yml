@@ -47,6 +47,7 @@ jobs:
             cat > .env << EOF
             API_SECRET_KEY=$API_SECRET_KEY
             PUBLIC_API_BACKEND_URL=$PUBLIC_API_BACKEND_URL
+            API_BACKEND_URL=$PUBLIC_API_BACKEND_URL
             EOF
 
             docker compose pull
