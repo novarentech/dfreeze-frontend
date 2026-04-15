@@ -32,7 +32,7 @@ jobs:
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v0.1.10
         env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/dfreeze-frontend:latest
           API_SECRET_KEY: ${{ secrets.API_SECRET_KEY }}
           PUBLIC_API_BACKEND_URL: ${{ secrets.PUBLIC_API_BACKEND_URL }}
         with:
@@ -40,13 +40,14 @@ jobs:
           username: ${{ secrets.VPS_1_HOST_USERNAME }}
           password: ${{ secrets.VPS_1_HOST_PASSWORD }}
           port: ${{ secrets.VPS_1_HOST_PORT }}
-          envs: DOCKER_USERNAME,API_SECRET_KEY,PUBLIC_PUBLIC_API_BACKEND_URL
+          envs: DOCKER_IMAGE,API_SECRET_KEY,PUBLIC_API_BACKEND_URL
           script: |
             cd /media/${{ github.event.repository.name }}
 
-            echo "DOCKER_USERNAME=$DOCKER_USERNAME" > .env
-            echo "API_SECRET_KEY=$API_SECRET_KEY" >> .env
-            echo "PUBLIC_API_BACKEND_URL=$PUBLIC_API_BACKEND_URL" >> .env
+            cat > .env << EOF
+            API_SECRET_KEY=$API_SECRET_KEY
+            PUBLIC_API_BACKEND_URL=$PUBLIC_API_BACKEND_URL
+            EOF
 
             docker compose pull
             docker compose down

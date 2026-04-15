@@ -23,7 +23,9 @@ ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=4321
 
-# Copy hasil build Astro SSR
+RUN addgroup -S app && adduser -S app -G app
+USER app
+
 COPY --from=builder /app/dist/server ./server
 COPY --from=builder /app/dist/client ./client
 COPY --from=deps /app/node_modules ./node_modules
