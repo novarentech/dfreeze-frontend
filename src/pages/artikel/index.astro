@@ -3,11 +3,12 @@ export const prerender = false;
 
 import MainLayout from '../../layouts/MainLayout.astro';
 import { getArticles } from '../../lib/api/articles';
+import type { Article } from '../../types/article';
 import { getThumbnailUrl } from "../../lib/utils/media";
 import { getSummary } from "../../lib/utils/content";
 
 // Fetch artikel dari Strapi (SSR)
-let articles = [];
+let articles: Article[] = [];
 let fetchError = false;
 
 try {
@@ -16,20 +17,6 @@ try {
   console.error(err);
   fetchError = true;
 }
-
-const articleList = articles.map((article) => {
-  return {
-    ...article,
-    thumbnailUrl: getThumbnailUrl(article.thumbnail),
-    summary: getSummary(article.content),
-    slug: article.documentId,
-    publishedDate: article.publishedAt
-      ? new Date(article.publishedAt).toLocaleDateString('id-ID', {
-          year: 'numeric', month: 'long', day: 'numeric',
-        })
-      : null,
-  };
-});
 
 ---
 

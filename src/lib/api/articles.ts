@@ -1,9 +1,10 @@
 import { ENV_SERVER } from "../../config/env.server";
 import { getCache, setCache } from "../cache";
+import type { Article } from "../../types/article";
 
 const CACHE_TTL = 60 * 1000; // 1 menit
 
-async function fetchArticlesFromAPI() {
+async function fetchArticlesFromAPI(): Promise<Article[]> {
   const res = await fetch(
     `${ENV_SERVER.API_BACKEND_URL}/articles?populate=thumbnail`,
     {
@@ -21,10 +22,10 @@ async function fetchArticlesFromAPI() {
   return Array.isArray(json.data) ? json.data : [];
 }
 
-export async function getArticles() {
+export async function getArticles(): Promise<Article[]> {
   const cacheKey = "articles";
 
-  const cached = getCache<any[]>(cacheKey);
+  const cached = getCache<Article[]>(cacheKey);
   if (cached) return cached;
 
   try {
@@ -39,11 +40,11 @@ export async function getArticles() {
   }
 }
 
-export async function getArticleBySlug(slug: string) {
+export async function getArticleBySlug(slug: string): Promise<Article | null> {
   const cacheKey = `article-${slug}`;
 
   // ambil cache dulu (kalau ada)
-  const cached = getCache<any>(cacheKey);
+  const cached = getCache<Article>(cacheKey);
 
   try {
     const res = await fetch(
