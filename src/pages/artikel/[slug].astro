@@ -1,51 +1,28 @@
 ---
+export const prerender = false;
+
 import MainLayout from '../../layouts/MainLayout.astro';
-import { renderStrapiBlocks } from '../../lib/strapi.js';
-import { ENV } from "../../config/env";
+import { renderStrapiBlocks } from '../../lib/utils/strapi.js';
+import { getArticleBySlug } from '../../lib/api/articles';
+import { getThumbnailUrl } from "../../lib/utils/media";
 
 const { slug } = Astro.params;
 
 let article = null;
-let fetchError = false;
-let notFound = false;
 
-try {
-  const res = await fetch(
-  `${ENV.API_BACKEND_URL}/articles/${slug}?populate=thumbnail`,
-  {
-    headers: {
-      Authorization: `Bearer ${ENV.API_SECRET_KEY}`,
-    },
-  }
-);
-
-  if (res.status === 404) {
-    notFound = true;
-  } else if (!res.ok) {
-    fetchError = true;
-  } else {
-    const json = await res.json();
-    article = json.data ?? null;
-
-    if (!article) notFound = true;
-  }
-} catch (error) {
-  console.error('Fetch error:', error);
-  fetchError = true;
+// ❗ validasi slug
+if (!slug) {
+  return Astro.redirect('/404');
 }
 
-if (notFound) return Astro.redirect('/404');
-if (fetchError || !article) return Astro.redirect('/500');
+try {
+  article = await getArticleBySlug(slug);
+} catch (err) {
+  console.error("Fetch article error:", err);
+}
 
-function getThumbnailUrl(thumbnail) {
-  if (!thumbnail) return null;
-
-  const mediaUrl =
-    thumbnail.formats?.large?.url ??
-    thumbnail.formats?.medium?.url ??
-    thumbnail.url;
-
-  return mediaUrl ? `${ENV.MEDIA_BASE_URL}${mediaUrl}` : null;
+if (!article) {
+  return Astro.redirect('/404');
 }
 
 const thumbnailUrl = getThumbnailUrl(article.thumbnail);

@@ -1,58 +1,36 @@
 ---
+export const prerender = false;
+
 import MainLayout from '../../layouts/MainLayout.astro';
-import { ENV } from "../../config/env";
+import { getArticles } from '../../lib/api/articles';
+import { getThumbnailUrl } from "../../lib/utils/media";
+import { getSummary } from "../../lib/utils/content";
 
 // Fetch artikel dari Strapi (SSR)
 let articles = [];
 let fetchError = false;
 
 try {
-const res = await fetch(
-  `${ENV.API_BACKEND_URL}/articles?populate=thumbnail`,
-  {
-    headers: {
-      Authorization: `Bearer ${ENV.API_SECRET_KEY}`,
-    },
-  }
-);
-
-  if (res.ok) {
-    const json = await res.json();
-    articles = Array.isArray(json.data) ? json.data : [];
-  } else {
-    fetchError = true;
-  }
-} catch (error) {
-  console.error('Fetch articles error:', error);
+  articles = await getArticles();
+} catch (err) {
+  console.error(err);
   fetchError = true;
 }
 
-function getThumbnailUrl(thumbnail) {
-  if (!thumbnail) return null;
+const articleList = articles.map((article) => {
+  return {
+    ...article,
+    thumbnailUrl: getThumbnailUrl(article.thumbnail),
+    summary: getSummary(article.content),
+    slug: article.documentId,
+    publishedDate: article.publishedAt
+      ? new Date(article.publishedAt).toLocaleDateString('id-ID', {
+          year: 'numeric', month: 'long', day: 'numeric',
+        })
+      : null,
+  };
+});
 
-  const mediaUrl =
-    thumbnail.formats?.medium?.url ??
-    thumbnail.formats?.small?.url ??
-    thumbnail.formats?.large?.url ??
-    thumbnail.url;
-
-  return mediaUrl ? `${ENV.MEDIA_BASE_URL}${mediaUrl}` : null;
-}
-
-function getSummary(content, maxLength = 120) {
-  if (!Array.isArray(content)) return '';
-
-  const text = content
-    .flatMap((block) => block.children ?? [])
-    .filter((c) => c.type === 'text')
-    .map((c) => c.text)
-    .join(' ')
-    .trim();
-
-  return text.length > maxLength
-    ? text.slice(0, maxLength) + '...'
-    : text;
-}
 ---
 
 <MainLayout
