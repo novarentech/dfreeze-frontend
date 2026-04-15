@@ -1,58 +1,57 @@
 ---
 import MainLayout from '../../layouts/MainLayout.astro';
-
-// Base URL untuk gambar (tanpa /api, karena upload URL relatif ke root domain)
-const API_BACKEND_URL = process.env.API_BACKEND_URL ?? '';
-const API_SECRET_KEY = process.env.API_SECRET_KEY ?? '';
-const MEDIA_BASE_URL = API_BACKEND_URL.replace(/\/api$/, '');
+import { ENV } from "../../config/env";
 
 // Fetch artikel dari Strapi (SSR)
 let articles = [];
 let fetchError = false;
 
 try {
-  if (API_BACKEND_URL) {
-    const res = await fetch(`${API_BACKEND_URL}/articles?populate=thumbnail`, {
-      headers: API_SECRET_KEY ? { Authorization: `Bearer ${API_SECRET_KEY}` } : {},
-    });
-    if (res.ok) {
-      const json = await res.json();
-      // Strapi v5: { data: [...], meta: { pagination: {...} } }
-      articles = Array.isArray(json.data) ? json.data : [];
-    } else {
-      fetchError = true;
-    }
+const res = await fetch(
+  `${ENV.API_BACKEND_URL}/articles?populate=thumbnail`,
+  {
+    headers: {
+      Authorization: `Bearer ${ENV.API_SECRET_KEY}`,
+    },
   }
-} catch {
+);
+
+  if (res.ok) {
+    const json = await res.json();
+    articles = Array.isArray(json.data) ? json.data : [];
+  } else {
+    fetchError = true;
+  }
+} catch (error) {
+  console.error('Fetch articles error:', error);
   fetchError = true;
 }
 
-/**
- * Mengambil URL thumbnail terbaik dari object thumbnail Strapi.
- * Prioritas: medium → small → large → original
- */
 function getThumbnailUrl(thumbnail) {
   if (!thumbnail) return null;
+
   const mediaUrl =
     thumbnail.formats?.medium?.url ??
     thumbnail.formats?.small?.url ??
     thumbnail.formats?.large?.url ??
     thumbnail.url;
-  return mediaUrl ? `${MEDIA_BASE_URL}${mediaUrl}` : null;
+
+  return mediaUrl ? `${ENV.MEDIA_BASE_URL}${mediaUrl}` : null;
 }
 
-/**
- * Mengambil ringkasan teks dari block content Strapi.
- */
 function getSummary(content, maxLength = 120) {
   if (!Array.isArray(content)) return '';
+
   const text = content
     .flatMap((block) => block.children ?? [])
     .filter((c) => c.type === 'text')
     .map((c) => c.text)
     .join(' ')
     .trim();
-  return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
+
+  return text.length > maxLength
+    ? text.slice(0, maxLength) + '...'
+    : text;
 }
 ---
 

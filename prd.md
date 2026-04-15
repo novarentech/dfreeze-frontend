@@ -22,7 +22,7 @@ API Communication: Native fetch() bawaan Astro/Node.
 
 Environment Variables:
 
-API_BACKEND_URL: Base URL untuk mengambil artikel dan mengirim booking.
+PUBLIC_API_BACKEND_URL: Base URL untuk mengambil artikel dan mengirim booking.
 
 API_SECRET_KEY: Token rahasia (Bearer) untuk otorisasi POST request.
 
@@ -32,20 +32,19 @@ AI harus menghasilkan kode dengan struktur file dan perutean (routing) berikut:
 
 src/
 ├── components/
-│   ├── ui/               (Komponen otomatis dari shadcn/ui)
-│   └── BookingModal.jsx  (Pulau interaktif React untuk fitur Booking)
+│ ├── ui/ (Komponen otomatis dari shadcn/ui)
+│ └── BookingModal.jsx (Pulau interaktif React untuk fitur Booking)
 ├── layouts/
-│   └── MainLayout.astro  (Kerangka global: Navbar, Main slot, Footer)
+│ └── MainLayout.astro (Kerangka global: Navbar, Main slot, Footer)
 ├── pages/
-│   ├── api/
-│   │   └── booking.js    (Astro Server Endpoint untuk POST form secara rahasia)
-│   ├── artikel/
-│   │   ├── [slug].astro  (Halaman detail spesifik artikel)
-│   │   └── index.astro   (Daftar artikel - grid view)
-│   ├── 404.astro         (Halaman Custom Error: Not Found)
-│   ├── 500.astro         (Halaman Custom Error: Server Error)
-│   └── index.astro       (Halaman Beranda Statis)
-
+│ ├── api/
+│ │ └── booking.js (Astro Server Endpoint untuk POST form secara rahasia)
+│ ├── artikel/
+│ │ ├── [slug].astro (Halaman detail spesifik artikel)
+│ │ └── index.astro (Daftar artikel - grid view)
+│ ├── 404.astro (Halaman Custom Error: Not Found)
+│ ├── 500.astro (Halaman Custom Error: Server Error)
+│ └── index.astro (Halaman Beranda Statis)
 
 4. Spesifikasi Halaman & Fitur
 
@@ -69,7 +68,7 @@ C. Fitur Artikel (Konsumsi API)
 
 Daftar Artikel (artikel/index.astro):
 
-Mengambil data live (SSR) dengan fetch dari process.env.API_BACKEND_URL/articles.
+Mengambil data live (SSR) dengan fetch dari process.env.PUBLIC_API_BACKEND_URL/articles.
 
 Menampilkan data menggunakan komponen <Card> dari shadcn.
 
@@ -79,7 +78,7 @@ Detail Artikel (artikel/[slug].astro):
 
 Mengambil slug dari URL parameter (karena SSR, tidak butuh getStaticPaths).
 
-fetch data spesifik dari process.env.API_BACKEND_URL/articles/{slug}.
+fetch data spesifik dari process.env.PUBLIC_API_BACKEND_URL/articles/{slug}.
 
 Menampilkan Judul lengkap, Tanggal, dan konten artikel (HTML).
 
@@ -101,7 +100,7 @@ Astro Server Endpoint (api/booking.js):
 
 Menerima POST request JSON dari React Modal.
 
-Meneruskan data ke eksternal API: fetch POST ke process.env.API_BACKEND_URL/bookings.
+Meneruskan data ke eksternal API: fetch POST ke process.env.PUBLIC_API_BACKEND_URL/bookings.
 
 Wajib menyisipkan header: Authorization: Bearer process.env.API_SECRET_KEY.
 

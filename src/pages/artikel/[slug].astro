@@ -1,62 +1,63 @@
 ---
 import MainLayout from '../../layouts/MainLayout.astro';
 import { renderStrapiBlocks } from '../../lib/strapi.js';
+import { ENV } from "../../config/env";
 
-const { slug } = Astro.params; // slug = documentId dari Strapi
-
-const API_BACKEND_URL = process.env.API_BACKEND_URL ?? '';
-const API_SECRET_KEY = process.env.API_SECRET_KEY ?? '';
-const MEDIA_BASE_URL = API_BACKEND_URL.replace(/\/api$/, '');
+const { slug } = Astro.params;
 
 let article = null;
 let fetchError = false;
 let notFound = false;
 
 try {
-  if (!API_BACKEND_URL) {
+  const res = await fetch(
+  `${ENV.API_BACKEND_URL}/articles/${slug}?populate=thumbnail`,
+  {
+    headers: {
+      Authorization: `Bearer ${ENV.API_SECRET_KEY}`,
+    },
+  }
+);
+
+  if (res.status === 404) {
+    notFound = true;
+  } else if (!res.ok) {
     fetchError = true;
   } else {
-    // Strapi v5: fetch by documentId dengan populate thumbnail
-    const res = await fetch(`${API_BACKEND_URL}/articles/${slug}?populate=thumbnail`, {
-      headers: API_SECRET_KEY ? { Authorization: `Bearer ${API_SECRET_KEY}` } : {},
-    });
+    const json = await res.json();
+    article = json.data ?? null;
 
-    if (res.status === 404) {
-      notFound = true;
-    } else if (!res.ok) {
-      fetchError = true;
-    } else {
-      const json = await res.json();
-      // Strapi v5: { data: {...}, meta: {} }
-      article = json.data ?? null;
-      if (!article) notFound = true;
-    }
+    if (!article) notFound = true;
   }
-} catch {
+} catch (error) {
+  console.error('Fetch error:', error);
   fetchError = true;
 }
 
 if (notFound) return Astro.redirect('/404');
 if (fetchError || !article) return Astro.redirect('/500');
 
-// Build absolute thumbnail URL
 function getThumbnailUrl(thumbnail) {
   if (!thumbnail) return null;
+
   const mediaUrl =
     thumbnail.formats?.large?.url ??
     thumbnail.formats?.medium?.url ??
     thumbnail.url;
-  return mediaUrl ? `${MEDIA_BASE_URL}${mediaUrl}` : null;
+
+  return mediaUrl ? `${ENV.MEDIA_BASE_URL}${mediaUrl}` : null;
 }
 
 const thumbnailUrl = getThumbnailUrl(article.thumbnail);
 
-// Render block content ke HTML
 const contentHtml = renderStrapiBlocks(article.content);
 
 const publishedDate = article.publishedAt
   ? new Date(article.publishedAt).toLocaleDateString('id-ID', {
-      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     })
   : null;
 ---

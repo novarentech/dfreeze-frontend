@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
-# ── Stage 2: Build ──────────────────────────────────────────────────────────
+# ── Stage 2: Build ─────────────────────────────────────────────────────────
 FROM node:22-alpine AS builder
 WORKDIR /app
 
@@ -23,7 +23,7 @@ ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=4321
 
-# Hanya copy output build standalone dari Astro
+# Copy hasil build Astro SSR
 COPY --from=builder /app/dist/server ./server
 COPY --from=builder /app/dist/client ./client
 COPY --from=deps /app/node_modules ./node_modules

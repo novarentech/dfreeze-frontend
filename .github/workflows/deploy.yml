@@ -23,30 +23,31 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/dfreeze-frontend:latest
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Deploy on VPS
+      - name: Deploy to VPS
         uses: appleboy/ssh-action@v0.1.10
         env:
-          API_BACKEND_URL: ${{ secrets.API_BACKEND_URL }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           API_SECRET_KEY: ${{ secrets.API_SECRET_KEY }}
+          PUBLIC_API_BACKEND_URL: ${{ secrets.PUBLIC_API_BACKEND_URL }}
         with:
           host: ${{ secrets.VPS_1_HOST_IP }}
           username: ${{ secrets.VPS_1_HOST_USERNAME }}
           password: ${{ secrets.VPS_1_HOST_PASSWORD }}
           port: ${{ secrets.VPS_1_HOST_PORT }}
-          envs: API_BACKEND_URL,API_SECRET_KEY
+          envs: DOCKER_USERNAME,API_SECRET_KEY,PUBLIC_PUBLIC_API_BACKEND_URL
           script: |
             cd /media/${{ github.event.repository.name }}
-            echo "API_BACKEND_URL=$API_BACKEND_URL" > .env
+
+            echo "DOCKER_USERNAME=$DOCKER_USERNAME" > .env
             echo "API_SECRET_KEY=$API_SECRET_KEY" >> .env
+            echo "PUBLIC_API_BACKEND_URL=$PUBLIC_API_BACKEND_URL" >> .env
+
             docker compose pull
             docker compose down
             docker compose up -d
