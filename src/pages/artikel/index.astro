@@ -1,11 +1,11 @@
 ---
 export const prerender = false;
 
-import MainLayout from '../../layouts/MainLayout.astro';
-import { getArticles } from '../../lib/api/articles';
-import type { Article } from '../../types/article';
-import { getThumbnailUrl } from "../../lib/utils/media";
-import { getSummary } from "../../lib/utils/content";
+import { getThumbnailUrl } from '@/lib/utils/media';
+import MainLayout from '@/layouts/MainLayout.astro';
+import { getArticles } from '@/lib/api/articles';
+import type { Article } from '@/types/article';
+import { getSummary } from '@/lib/utils/content';
 
 // Fetch artikel dari Strapi (SSR)
 let articles: Article[] = [];

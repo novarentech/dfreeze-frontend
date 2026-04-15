@@ -1,4 +1,4 @@
-import { ENV_SERVER } from "../../config/env.server";
+import { ENV_SERVER } from "@/config/env.server";
 
 
 export function getThumbnailUrl(thumbnail?: any): string | null {

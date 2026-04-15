@@ -1,10 +1,10 @@
 ---
 export const prerender = false;
 
-import MainLayout from '../../layouts/MainLayout.astro';
+import MainLayout from '@/layouts/MainLayout.astro';
 import { BlocksRenderer } from '@strapi/blocks-react-renderer';
-import { getArticleBySlug } from '../../lib/api/articles';
-import { getThumbnailUrl } from "../../lib/utils/media";
+import { getArticleBySlug } from '@/lib/api/articles';
+import { getThumbnailUrl } from "@/lib/utils/media";
 
 const { slug } = Astro.params;
 

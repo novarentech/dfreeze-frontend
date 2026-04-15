@@ -1,6 +1,6 @@
-import { ENV_SERVER } from "../../config/env.server";
-import { getCache, setCache } from "../cache";
-import type { Article } from "../../types/article";
+import { ENV_SERVER } from "@/config/env.server";
+import { getCache, setCache } from "@/lib/cache";
+import type { Article } from "@/types/article";
 
 const CACHE_TTL = 60 * 1000; // 1 menit
 
