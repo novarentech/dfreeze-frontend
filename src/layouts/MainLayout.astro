@@ -1,24 +1,15 @@
 ---
-import BookingModal from '../components/BookingModal.jsx';
+import BookingModal from '@/components/BookingModal.jsx';
+import SEO from '@/components/SEO.astro';
 import '../styles/global.css';
 
-const { title = 'DFreeze Vet Clinic', description = 'Klinik hewan terpercaya untuk sahabat berbulu Anda.' } = Astro.props;
-const currentPath = Astro.url.pathname;
+const { title, description, image, type } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="id" class="scroll-smooth">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="generator" content={Astro.generator} />
-    <title>{title} | DFreeze Vet Clinic</title>
-    <meta name="description" content={description} />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <SEO title={title} description={description} image={image} type={type} />
   </head>
   <body class="bg-white text-slate-900 font-sans antialiased">
 
@@ -50,14 +41,14 @@ const currentPath = Astro.url.pathname;
             <a
               href="/"
               id="nav-beranda"
-              class={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${currentPath === '/' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:text-blue-700 hover:bg-slate-50'}`}
+              class={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${Astro.url.pathname === '/' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:text-blue-700 hover:bg-slate-50'}`}
             >
               Beranda
             </a>
             <a
               href="/artikel"
               id="nav-artikel"
-              class={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${currentPath.startsWith('/artikel') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:text-blue-700 hover:bg-slate-50'}`}
+              class={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${Astro.url.pathname.startsWith('/artikel') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:text-blue-700 hover:bg-slate-50'}`}
             >
               Artikel
             </a>

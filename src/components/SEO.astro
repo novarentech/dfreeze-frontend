@@ -1,0 +1,58 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  canonicalUrl?: string;
+}
+
+const {
+  title = "DFreeze Vet Clinic",
+  description = "Klinik hewan terpercaya untuk sahabat berbulu Anda. Perawatan terbaik, fasilitas modern, dan dokter hewan berpengalaman.",
+  image = "/og-image.jpg",
+  type = "website",
+  canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).href
+} = Astro.props;
+
+// Format title properly
+const siteTitle = title === "DFreeze Vet Clinic" ? title : `${title} | DFreeze Vet Clinic`;
+
+// Resolve image URL
+const ogImage = new URL(image, Astro.site ?? Astro.url.origin).href;
+---
+
+<!-- Global Metadata -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" href="/favicon.ico" />
+<meta name="generator" content={Astro.generator} />
+
+<!-- Canonical URL -->
+<link rel="canonical" href={canonicalUrl} />
+
+<!-- Primary Meta Tags -->
+<title>{siteTitle}</title>
+<meta name="title" content={siteTitle} />
+<meta name="description" content={description} />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:title" content={siteTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:site_name" content="DFreeze Vet Clinic" />
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={canonicalUrl} />
+<meta property="twitter:title" content={siteTitle} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content={ogImage} />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dfreeze.novarentech.com//sitemap-index.xml
