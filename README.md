@@ -25,6 +25,7 @@ Keamanan selalu menjadi celah rawan pada aplikasi frontend yang menembak API pub
 - **Dynamic Real-time XML Sitemap (`sitemap.xml.ts`)**: Tidak ada paket sitemap statis lagi. Sitemap dirender berbasis Server (SSR) memetakan semua rute dinamis (contoh `[slug].astro`) yang secara *real-time* langsung menembak API CMS! Cukup terbitkan artikel di Backend, dan Sitemap Astro otomatis ter-update saat diekstrak oleh Google Bot!
 - **Enterprise JSON-LD**: `<script type="application/ld+json">` yang berformat Google Standard disuntikkan secara dinamis pada tiap halaman melalui props komponen `<SEO />`. Google benar-benar mengenali entitas `LocalBusiness` pada Beranda dan entitas `Article/NewsArticle` pada blog.
 - **Open Graph & Canonical Defense**: Memastikan *Penalty Duplicate Content* tidak terjadi melalui sinkronisasi `<link rel="canonical">` bawaan jika URL diakses aneh via parameter spam.
+- **Zero-Latency Analytics (Partytown)**: Skrip berat Google Analytics 4 (GA4) secara aman dieksekusi di ranah *Web Worker* bawaan (`@astrojs/partytown`), menjaga main-thread tetap 100% cepat bebas blokir, lengkap dengan sensor pemblokir interaksi otomatis bila website dibuka di host *development* lokal (`isProd`).
 
 ### ⚡ 3. Clean UI & Component Architecture
 - **Island Architecture**: Konsep utama: Halaman yang pasif (Artikel, Landing Page) dilahap secara super kilat sebagai HTML statis biasa, sedangkan fungsionalitas cerdas, stateful, dan reaktif (seperti `BookingModal.tsx`) menggunakan modul React DOM (`client:load`).
