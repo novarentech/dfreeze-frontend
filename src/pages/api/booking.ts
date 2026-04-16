@@ -65,7 +65,7 @@ export async function POST({ request, clientAddress }: APIContext) {
     const validatedData = bookingSchema.safeParse(body);
 
     if (!validatedData.success) {
-      const errorMsg = validatedData.error.errors.map((e) => e.message).join(", ");
+      const errorMsg = validatedData.error.issues.map((e: z.ZodIssue) => e.message).join(", ");
       return new Response(
         JSON.stringify({ success: false, message: errorMsg }),
         { status: 400, headers: { "Content-Type": "application/json" } },
