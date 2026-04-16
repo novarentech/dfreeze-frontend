@@ -1,11 +1,35 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
 import BookingModal from '@/components/BookingModal.jsx';
+const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": "VeterinaryCare",
+  "name": "DFreeze Vet Clinic",
+  "image": "https://dfreeze.novarentech.com/og-image.jpg",
+  "@id": "https://dfreeze.novarentech.com",
+  "url": "https://dfreeze.novarentech.com",
+  "telephone": "+62211234567",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Jl. Kesehatan No. 1",
+    "addressLocality": "Jakarta Selatan",
+    "addressRegion": "DKI Jakarta",
+    "postalCode": "12345",
+    "addressCountry": "ID"
+  },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "opens": "00:00",
+    "closes": "23:59"
+  }
+};
 ---
 
 <MainLayout
   title="Beranda"
   description="DFreeze Vet Clinic – Klinik hewan terpercaya untuk perawatan kesehatan hewan peliharaan Anda. Konsultasi, vaksinasi, grooming, dan bedah."
+  jsonld={localBusinessSchema}
 >
   <!-- Hero Section -->
   <section class="relative py-20 md:py-32 overflow-hidden">

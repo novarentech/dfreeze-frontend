@@ -35,6 +35,22 @@ const publishedDate = article.publishedAt
       day: 'numeric',
     })
   : null;
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": article.title,
+  "image": [
+    thumbnailUrl ? new URL(thumbnailUrl, 'https://dfreeze.novarentech.com').href : "https://dfreeze.novarentech.com/og-image.jpg"
+  ],
+  "datePublished": article.publishedAt || article.createdAt,
+  "dateModified": article.updatedAt || article.publishedAt || article.createdAt,
+  "author": [{
+      "@type": "Person",
+      "name": "DFreeze Vet Team",
+      "url": "https://dfreeze.novarentech.com"
+  }]
+};
 ---
 
 <MainLayout
@@ -42,6 +58,7 @@ const publishedDate = article.publishedAt
   description={article.title ?? 'Baca artikel kesehatan hewan peliharaan di DFreeze Vet Clinic.'}
   image={thumbnailUrl}
   type="article"
+  jsonld={articleSchema}
 >
   <article class="py-12 max-w-3xl mx-auto">
 

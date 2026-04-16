@@ -5,6 +5,7 @@ interface Props {
   image?: string;
   type?: 'website' | 'article';
   canonicalUrl?: string;
+  jsonld?: Record<string, any> | Record<string, any>[];
 }
 
 const {
@@ -12,7 +13,8 @@ const {
   description = "Klinik hewan terpercaya untuk sahabat berbulu Anda. Perawatan terbaik, fasilitas modern, dan dokter hewan berpengalaman.",
   image = "/og-image.jpg",
   type = "website",
-  canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).href
+  canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).href,
+  jsonld
 } = Astro.props;
 
 // Format title properly
@@ -51,6 +53,11 @@ const ogImage = new URL(image, Astro.site ?? Astro.url.origin).href;
 <meta property="twitter:title" content={siteTitle} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={ogImage} />
+
+<!-- JSON-LD Structured Data Schema -->
+{jsonld && (
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonld)} />
+)}
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />

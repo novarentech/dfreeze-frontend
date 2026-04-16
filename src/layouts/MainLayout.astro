@@ -3,13 +3,13 @@ import BookingModal from '@/components/BookingModal.jsx';
 import SEO from '@/components/SEO.astro';
 import '../styles/global.css';
 
-const { title, description, image, type } = Astro.props;
+const { title, description, image, type, jsonld } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="id" class="scroll-smooth">
   <head>
-    <SEO title={title} description={description} image={image} type={type} />
+    <SEO title={title} description={description} image={image} type={type} jsonld={jsonld} />
   </head>
   <body class="bg-white text-slate-900 font-sans antialiased">
 
