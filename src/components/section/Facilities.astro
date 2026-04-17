@@ -1,0 +1,63 @@
+---
+import { 
+  loveIcon, 
+  graphIcon, 
+  sanitizerIcon, 
+  shieldIcon, 
+  thumbUpIcon 
+} from "@/assets/icons";
+
+const facilities = [
+  {
+    title: "Ruang Tunggu yang Nyaman",
+    description: "Dirancang untuk meminimalkan stres pada hewan peliharaan dan pemiliknya",
+    icon: loveIcon,
+  },
+  {
+    title: "Peralatan Diagnostik Canggih",
+    description: "Dilengkapi mesin X-Ray dan Ultrasonografi (USG), kami dapat mendiagnosis kondisi internal hewan peliharaan Anda.",
+    icon: graphIcon,
+  },
+  {
+    title: "Ruang Pemeriksaan Steril",
+    description: "Setiap ruang pemeriksaan kami dibersihkan dan disterilisasi secara berkala untuk menjamin keamanan pasien.",
+    icon: sanitizerIcon,
+  },
+  {
+    title: "Ruang Rawat Inap yang Aman",
+    description: "Rawat inap terpisah untuk pasien infeksius dan non-infeksius guna meminimalkan risiko penularan.",
+    icon: shieldIcon,
+  },
+  {
+    title: "Ruang Bedah Berstandar Tinggi",
+    description: "Ruang operasi kami dirancang sesuai standar medis veteriner untuk memastikan keselamatan setiap prosedur bedah.",
+    icon: thumbUpIcon,
+  },
+];
+---
+<section id="fasilitas" class="py-20 bg-white">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-14">
+      <span class="text-primary text-sm font-bold uppercase tracking-widest">FASILITAS</span>
+      <h2 class="mt-3 text-3xl md:text-4xl font-bold text-slate-800 leading-tight">
+        Fasilitas Modern untuk <span class="text-primary">Perawatan</span> Terbaik
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {facilities.map((item) => (
+        <div class="group flex flex-col sm:flex-row items-center sm:items-start gap-5 p-8 bg-white rounded-3xl border border-sky-100/50 shadow-xs hover:shadow-xl hover:shadow-sky-500/5 hover:border-primary/20 transition-all duration-300">
+          <div class="shrink-0 w-8 h-8 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 overflow-hidden">
+            <img src={item.icon} alt={item.title} class="w-full h-full object-cover" />
+          </div>
+          <div class="space-y-2 text-center sm:text-left">
+            <h3 class="text-lg font-bold text-primary">{item.title}</h3>
+            <p class="text-slate-500 leading-relaxed text-sm md:text-base">
+              {item.description}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
