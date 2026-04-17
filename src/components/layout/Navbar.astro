@@ -1,0 +1,92 @@
+---
+import logo from '@/assets/logo.png';
+import MobileMenuToggle from '../ui/MobileMenuToggle';
+import TopBar from './TopBar.astro';
+
+const pathname = Astro.url.pathname;
+
+const navLinks = [
+  { href: '/',            label: 'Beranda',     active: pathname === '/' },
+  { href: '/tentang',     label: 'Tentang Kami', active: pathname.startsWith('/tentang') },
+  { href: '/layanan',     label: 'Layanan',     active: pathname.startsWith('/layanan') },
+  { href: '/artikel',     label: 'Artikel',     active: pathname.startsWith('/artikel') },
+  { href: '/qa',          label: 'Q&A',         active: pathname.startsWith('/qa') },
+];
+---
+
+<header class="fixed top-0 z-40 w-full shadow-sm mx-auto bg-white">
+  <TopBar />
+
+  <!-- Main Navbar -->
+  <div class="bg-background border-b border-slate-100">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between py-1">
+
+        <!-- Logo -->
+        <a href="/" class="flex items-center gap-3 group shrink-0" id="nav-logo">
+          <div class="w-11 h-11 rounded-full flex items-center justify-center bg-background shadow group-hover:shadow-md transition-shadow overflow-hidden p-0">
+            <img src={logo.src} alt="Logo" class="w-full h-full object-cover" />
+          </div>
+          <div class="flex flex-col justify-center">
+            <span class="block text-[9px] sm:text-[11px] text-slate-500 font-medium tracking-wide uppercase leading-none">Klinik Hewan</span>
+            <span class="block text-[13px] sm:text-[15px] font-extrabold text-slate-800 leading-tight tracking-wide">D'FREEZE &amp; SON</span>
+          </div>
+        </a>
+
+        <!-- Desktop Nav Menu -->
+        <nav class="hidden md:flex items-center gap-1 py-4" id="nav-menu">
+          {navLinks.map((link) => (
+            <a
+              href={link.href}
+              class={`px-3 py-1 text-sm font-medium transition-colors border-b-2 ${
+                link.active
+                  ? 'border-primary text-primary font-semibold'
+                  : 'border-transparent hover:text-primary hover:border-primary/40'
+              }`}
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+
+        <!-- CTA + Mobile Toggle -->
+        <div class="flex items-center gap-2">
+          <!-- Hubungi Kami Button -->
+          <a
+            href="/kontak"
+            id="nav-cta"
+            class="hidden md:inline-flex items-center px-5 py-2 rounded-full bg-[#F5BC2B] hover:bg-[#e6ad20] text-sm font-semibold transition-all shadow-sm hover:shadow-md"
+          >
+            Hubungi Kami
+          </a>
+
+          <MobileMenuToggle client:load />
+        </div>
+      </div>
+
+      <!-- Mobile Menu Dropdown -->
+      <div id="mobile-menu" class="md:hidden grid grid-rows-[0fr] transition-all duration-300 ease-in-out opacity-0 -translate-y-2 pointer-events-none">
+        <div class="overflow-hidden">
+          <div class="pb-4 border-t border-slate-100 pt-2 space-y-1">
+            {navLinks.map((link) => (
+          <a
+            href={link.href}
+            class={`block px-3 py-2.5 text-sm font-medium rounded-lg mb-0.5 transition-colors ${
+              link.active
+                ? 'bg-teal-50 border-primary text-primary font-semibold'
+                : 'hover:text-primary hover:bg-teal-50'
+            }`}
+          >
+            {link.label}
+          </a>
+        ))}
+        <a
+          href="/kontak"
+          class="mt-3 block text-center px-5 py-2.5 rounded-full bg-[#F5BC2B] hover:bg-[#e6ad20] text-sm font-semibold transition-colors"
+        >
+          Hubungi Kami
+        </a>
+      </div>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,63 @@
+---
+import { Phone, Mail } from 'lucide-react';
+import facebookLogo from '@/assets/icons/facebook.svg';
+import mapsLogo from '@/assets/icons/maps.svg';
+---
+
+<!-- Top Bar -->
+<div id="top-bar" class="bg-secondary text-white mx-auto rounded-b-xl md:px-4 sm:px-2 px-0 max-w-[90%] sm:container transition-all duration-500 ease-in-out grid grid-rows-[1fr] opacity-100 origin-top">
+  <div class="overflow-hidden">
+    <div class="flex items-center justify-between h-10 px-4">
+      <!-- Contact Info -->
+      <div class="flex items-center gap-3 sm:gap-5 text-xs">
+        <a href="tel:08112609091" class="flex items-center gap-1.5 hover:text-white/80 transition-colors shrink-0" id="topbar-phone">
+          <Phone width={14} height={14}/>
+          0811-2609-091
+        </a>
+        <a href="mailto:inaorthovet@gmail.com" class="flex items-center gap-1.5 hover:text-white/80 transition-colors shrink-0" id="topbar-email">
+          <Mail width={14} height={14}/>
+          <span class="hidden sm:inline">inaorthovet@gmail.com</span>
+          <span class="sm:hidden xs:inline">Email</span>
+        </a>
+      </div>
+
+      <!-- Social Icons -->
+      <div class="flex items-center gap-3">
+        <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="facebook" class="group">
+          <img src={facebookLogo.src} width={20} height={20} alt="facebook" class="transition duration-200 group-hover:opacity-70"/>
+        </a>
+        <a href="https://maps.google.com" target="_blank" rel="noopener" aria-label="Lokasi" class="group">
+          <img src={mapsLogo.src} width={20} height={20} alt="Maps" class="transition duration-200 group-hover:opacity-70"/>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let lastScrollTop = 0;
+  const topBar = document.getElementById('top-bar');
+  const scrollThreshold = 100; // Minimal scroll before hiding
+
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    
+    if (scrollTop > scrollThreshold) {
+      if (scrollTop > lastScrollTop) {
+        // Scrolling down - hide top bar
+        topBar?.classList.remove('grid-rows-[1fr]', 'opacity-100');
+        topBar?.classList.add('grid-rows-[0fr]', 'opacity-0');
+      } else {
+        // Scrolling up - show top bar
+        topBar?.classList.add('grid-rows-[1fr]', 'opacity-100');
+        topBar?.classList.remove('grid-rows-[0fr]', 'opacity-0');
+      }
+    } else {
+      // Near top - always show
+      topBar?.classList.add('grid-rows-[1fr]', 'opacity-100');
+      topBar?.classList.remove('grid-rows-[0fr]', 'opacity-0');
+    }
+    
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+  }, { passive: true });
+</script>
