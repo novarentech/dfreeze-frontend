@@ -97,7 +97,7 @@ export default function BookingModal({ variant = "default" }: { variant?: "defau
           className="rounded-full px-8 py-6 font-semibold shadow-lg shadow-black/10 hover:shadow-black/20 hover:text-primary transition-all hover:bg-white bg-white text-primary group w-full md:w-auto"
         >
           Buat Janji Sekarang
-          <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center group-hover:scale-110 transition-transform">
+          <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center group-hover:scale-110 transition-transform">
             <ArrowRight size={24} />
           </div>
         </Button>
