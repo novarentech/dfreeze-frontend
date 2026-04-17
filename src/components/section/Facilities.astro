@@ -46,11 +46,11 @@ const facilities = [
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {facilities.map((item) => (
-        <div class="group flex flex-col sm:flex-row items-center sm:items-start gap-5 p-8 bg-white rounded-3xl border border-sky-100/50 shadow-xs hover:shadow-xl hover:shadow-sky-500/5 hover:border-primary/20 transition-all duration-300">
+        <div class="group flex flex-row items-start gap-5 p-8 bg-white rounded-3xl border border-sky-100/50 shadow-xs hover:shadow-xl hover:shadow-sky-500/5 hover:border-primary/20 transition-all duration-300">
           <div class="shrink-0 w-8 h-8 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 overflow-hidden">
             <img src={item.icon} alt={item.title} class="w-full h-full object-cover" />
           </div>
-          <div class="space-y-2 text-center sm:text-left">
+          <div class="space-y-2 text-left">
             <h3 class="text-lg font-bold text-primary">{item.title}</h3>
             <p class="text-slate-500 leading-relaxed text-sm md:text-base">
               {item.description}
