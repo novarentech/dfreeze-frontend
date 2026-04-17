@@ -1,6 +1,6 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
-import BookingModal from '@/components/BookingModal.jsx';
+import CTA from '@/components/section/CTA.astro';
 import Hero from '@/components/section/Hero.astro';
 
 const localBusinessSchema = {
@@ -157,49 +157,5 @@ const localBusinessSchema = {
   </section>
 
   <!-- Why Us Section -->
-  <section class="py-20 border-t border-slate-100">
-    <div class="bg-linear-to-br from-blue-600 via-blue-700 to-sky-700 rounded-3xl p-10 md:p-16 text-white relative overflow-hidden">
-      <!-- Background decoration -->
-      <div class="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-      <div class="absolute bottom-0 left-0 w-60 h-60 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2"></div>
-
-      <div class="relative grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div>
-          <span class="text-blue-200 text-sm font-semibold uppercase tracking-widest">Mengapa Memilih Kami?</span>
-          <h2 class="mt-3 text-3xl md:text-4xl font-bold leading-tight">
-            Kepercayaan Ribuan Pemilik Hewan Peliharaan
-          </h2>
-          <p class="mt-4 text-blue-100 leading-relaxed text-lg">
-            Sejak 2014, kami telah melayani kebutuhan medis hewan peliharaan dengan standar tertinggi dan penuh empati. Kepercayaan Anda adalah prioritas utama kami.
-          </p>
-          <div class="mt-8">
-            <BookingModal client:load />
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/20">
-            <div class="text-3xl mb-2">🏥</div>
-            <h4 class="font-bold text-lg">Fasilitas Modern</h4>
-            <p class="text-sm text-blue-100 mt-1">Peralatan medis berteknologi tinggi dan ruang operasi steril berstandar internasional.</p>
-          </div>
-          <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/20">
-            <div class="text-3xl mb-2">👨‍⚕️</div>
-            <h4 class="font-bold text-lg">Dokter Berpengalaman</h4>
-            <p class="text-sm text-blue-100 mt-1">Tim dokter hewan bersertifikasi dengan pengalaman lebih dari 10 tahun di bidangnya.</p>
-          </div>
-          <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/20">
-            <div class="text-3xl mb-2">⏰</div>
-            <h4 class="font-bold text-lg">Layanan 24 Jam</h4>
-            <p class="text-sm text-blue-100 mt-1">Siap melayani darurat kapan saja, termasuk malam hari, akhir pekan, dan hari libur.</p>
-          </div>
-          <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/20">
-            <div class="text-3xl mb-2">💊</div>
-            <h4 class="font-bold text-lg">Obat Berkualitas</h4>
-            <p class="text-sm text-blue-100 mt-1">Penggunaan obat-obatan berlisensi dan produk perawatan yang aman untuk hewan peliharaan.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <CTA />
 </MainLayout>

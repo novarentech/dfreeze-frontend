@@ -1,3 +1,4 @@
+import { ArrowRight } from "lucide-react";
 import React, { useState } from "react";
 import {
   Dialog,
@@ -10,7 +11,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
-export default function BookingModal() {
+export default function BookingModal({ variant = "default" }: { variant?: "default" | "cta" }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState("idle"); // idle | success | error
@@ -62,31 +63,45 @@ export default function BookingModal() {
 
   return (
     <>
-      <Button
-        id="booking-trigger"
-        onClick={() => setIsOpen(true)}
-        size="default"
-        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md hover:shadow-lg transition-all"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="mr-1"
+      {variant === "default" ? (
+        <Button
+          id="booking-trigger"
+          onClick={() => setIsOpen(true)}
+          size="default"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md hover:shadow-lg transition-all"
         >
-          <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-          <line x1="16" x2="16" y1="2" y2="6" />
-          <line x1="8" x2="8" y1="2" y2="6" />
-          <line x1="3" x2="21" y1="10" y2="10" />
-        </svg>
-        Booking Sekarang
-      </Button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="mr-1"
+          >
+            <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+            <line x1="16" x2="16" y1="2" y2="6" />
+            <line x1="8" x2="8" y1="2" y2="6" />
+            <line x1="3" x2="21" y1="10" y2="10" />
+          </svg>
+          Booking Sekarang
+        </Button>
+      ) : (
+        <Button
+          id="booking-trigger-cta"
+          onClick={() => setIsOpen(true)}
+          size="xl"
+          className="rounded-full px-8 py-6 font-semibold shadow-lg shadow-black/10 hover:shadow-black/20 hover:text-primary transition-all hover:bg-white bg-white text-primary group w-full md:w-auto"
+        >
+          Buat Janji Sekarang
+          <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center group-hover:scale-110 transition-transform">
+            <ArrowRight size={24} />
+          </div>
+        </Button>
+      )}
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="sm:max-w-md">
