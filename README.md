@@ -7,117 +7,117 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)
 
-Template arsitektur kelas *Enterprise* berbasis **Astro SSR (Server-Side Rendering)** yang dikembangkan spesifik untuk menangani skala produksi (Production-Ready). Template ini membungkus lapisan validasi *Environment Requirement*, sistem keamanan *Endpoint* tangguh, dan metrik optimasi Mesin Pencari (SEO) yang telah melampaui kerangka rekayasa web standar. 
+An *Enterprise-grade* architecture template based on **Astro SSR (Server-Side Rendering)** developed specifically to handle production scale (Production-Ready). This template wraps a robust *Environment Requirement* validation layer, strong *Endpoint* security system, and Search Engine Optimization (SEO) metrics that exceed standard web engineering frameworks.
 
-Sangat direkomendasikan untuk Anda *clone* menjadi basis pondasi proyek korporat atau portofolio tingkat tinggi selanjutnya.
+Highly recommended for you to *clone* as the foundational base for your next corporate project or high-level portfolio.
 
 ---
 
-## ✨ Fitur & Keunggulan Arsitektur
+## ✨ Features & Architectural Advantages
 
 ### 🛡️ 1. Extreme Security & Validation Layer
-Keamanan selalu menjadi celah rawan pada aplikasi frontend yang menembak API publik. Repositori ini telah mengatasinya:
-- **Type-Safe Environment Variables**: Menggunakan `Zod` di `src/config/env.server.ts`. Astro akan mogok secara sadar (*Fail-Fast*) sewaktu build jika kofigurasi `.env` tidak lengkap atau URL API cacat. Hal ini akan menyelamatkan proyek dari kebocoran data rahasia karena salah konfigurasi di *production*.
-- **Endpoint Payload Validator**: Integrasi Form (seperti Booking) diamankan di level API (`src/pages/api/`). Skrip peretas (*Malicious JSON*) akan otomatis ditolak (*Bad Request 400*) jika format tipe isian JSON tidak sesuai dengan pola Statis `z.object({...})`.
-- **In-Memory Rate Limiter**: API Publik dilindungi logika *IP Rate Limiting* (contoh: *Max 3 requests / 60 seconds*). Ini mencegah basis data Strapi backend Anda ambruk karena diledakkan oleh ribuan serangan DDoS bot dari form di frontend.
+Security is always a vulnerable point in frontend applications hitting public APIs. This repository has addressed it:
+- **Type-Safe Environment Variables**: Using `Zod` in `src/config/env.server.ts`. Astro will intentionally crash (*Fail-Fast*) during the build if the `.env` configuration is incomplete or the API URL is malformed. This will save your project from secret data leaks due to misconfiguration in *production*.
+- **Endpoint Payload Validator**: Form integrations (like Booking) are secured at the API level (`src/pages/api/`). Hacker scripts (*Malicious JSON*) will automatically be rejected (*Bad Request 400*) if the input JSON format type does not match the Static schema `z.object({...})`.
+- **In-Memory Rate Limiter**: Public APIs are protected by *IP Rate Limiting* logic (e.g., *Max 3 requests / 60 seconds*). This prevents your backend Strapi database from crashing due to being blasted by thousands of bot DDoS attacks from forms on the frontend.
 
 ### 📈 2. Advanced Technical SEO
-- **Dynamic Real-time XML Sitemap (`sitemap.xml.ts`)**: Tidak ada paket sitemap statis lagi. Sitemap dirender berbasis Server (SSR) memetakan semua rute dinamis (contoh `[slug].astro`) yang secara *real-time* langsung menembak API CMS! Cukup terbitkan artikel di Backend, dan Sitemap Astro otomatis ter-update saat diekstrak oleh Google Bot!
-- **Enterprise JSON-LD**: `<script type="application/ld+json">` yang berformat Google Standard disuntikkan secara dinamis pada tiap halaman melalui props komponen `<SEO />`. Google benar-benar mengenali entitas `LocalBusiness` pada Beranda dan entitas `Article/NewsArticle` pada blog.
-- **Open Graph & Canonical Defense**: Memastikan *Penalty Duplicate Content* tidak terjadi melalui sinkronisasi `<link rel="canonical">` bawaan jika URL diakses aneh via parameter spam.
-- **Zero-Latency Analytics (Partytown)**: Skrip berat Google Analytics 4 (GA4) secara aman dieksekusi di ranah *Web Worker* bawaan (`@astrojs/partytown`), menjaga main-thread tetap 100% cepat bebas blokir, lengkap dengan sensor pemblokir interaksi otomatis bila website dibuka di host *development* lokal (`isProd`).
+- **Dynamic Real-time XML Sitemap (`sitemap.xml.ts`)**: No more static sitemap packages. The Server-based (SSR) rendered sitemap maps all dynamic routes (e.g., `[slug].astro`) that directly hit the CMS API in *real-time*! Simply publish an article on the Backend, and the Astro Sitemap gets updated automatically when extracted by Google Bot!
+- **Enterprise JSON-LD**: A Google Standard formatted `<script type="application/ld+json">` is injected dynamically on every page via the `<SEO />` component props. Google truly recognizes the `LocalBusiness` entity on the Homepage and `Article/NewsArticle` entities on the blog.
+- **Open Graph & Canonical Defense**: Ensures *Duplicate Content Penalty* does not occur through built-in `<link rel="canonical">` synchronization if the URL is ambiguously accessed via spam parameters.
+- **Zero-Latency Analytics (Partytown)**: The heavy Google Analytics 4 (GA4) script is safely executed within the built-in *Web Worker* domain (`@astrojs/partytown`), keeping the main-thread 100% fast and unblocked, complete with an automatic interaction blocker sensor when the website is opened in a local *development* host (`isProd`).
 
 ### ⚡ 3. Clean UI & Component Architecture
-- **Island Architecture**: Konsep utama: Halaman yang pasif (Artikel, Landing Page) dilahap secara super kilat sebagai HTML statis biasa, sedangkan fungsionalitas cerdas, stateful, dan reaktif (seperti `BookingModal.tsx`) menggunakan modul React DOM (`client:load`).
-- **Tailwind v4 & Shadcn UI**: Menunjang penyusunan estetika antarmuka dengan efisiensi tinggi lengkap dengan kapabilitas interaktivitas Radix UI Primitive.
-- **Absolute Path Aliases (`@/*`)**: Mendukung resolusi modul via `tsconfig.json` paths agar pohon referensi aplikasi tidak berlumur import rumit seperti `../../../../lib`.
+- **Island Architecture**: Main concept: Passive pages (Articles, Landing Pages) are consumed extremely fast as plain static HTML, while smart, stateful, and reactive functionalities (like `BookingModal.tsx`) use React DOM modules (`client:load`).
+- **Tailwind v4 & Shadcn UI**: Supports the aesthetic composition of the interface with high efficiency, complete with Radix UI Primitive interactivity capabilities.
+- **Absolute Path Aliases (`@/*`)**: Supports module resolution via `tsconfig.json` paths so that the application reference tree is not cluttered with complex imports like `../../../../lib`.
 
-### 🐳 4. Infrastruktur DevOps-Ready
-- **Non-Root Docker Execution**: Konfigurasi `Dockerfile` tidak dieksekusi dengan akun OS standar *root*. Sebaliknya, perintah diturunkan ke eskalasi `USER app`, memberi isolasi perimetrik tingkat ekstrim bila seandainya web berhasil dijebol. (Astro ditaruh dalam env `node standalone`).
-- **GitHub Workflow CI/CD (`deploy.yml`)**: Proses siklus Pipeline integrasi yang mendukung penyuntikan *GitHub Secrets* langsung menjadi `.env` temporer sebelum di*build* oleh container.
+### 🐳 4. DevOps-Ready Infrastructure
+- **Non-Root Docker Execution**: The `Dockerfile` configuration is not executed with standard OS *root* accounts. Instead, commands are delegated to the `USER app` escalation, providing extreme-level perimeter isolation in case the web is somehow compromised. (Astro is placed in a `node standalone` env).
+- **GitHub Workflow CI/CD (`deploy.yml`)**: An integration pipeline cycle process that supports injecting *GitHub Secrets* directly into a temporary `.env` before being *built* by the container.
 
 ---
 
-## 📂 Pohon Struktur Direktori (Directory Tree)
+## 📂 Directory Tree Structure
 
-Pendekatan struktur yang *scalable* dan rapi:
+A neat and *scalable* structural approach:
 
 ```text
 📦 project-root
-├── 📂 public/                   # Aset yang langsung di serve web worker (robots.txt, /img)
+├── 📂 public/                   # Assets served directly by web workers (robots.txt, /img)
 ├── 📂 src/
-│   ├── 📂 components/           # Komponen Reusable UI (Shadcn, <SEO/>, dan .tsx)
-│   ├── 📂 config/               # Single-Source of Truth untuk Variabel Lingkungan & Zod Setup
-│   ├── 📂 layouts/              # Template Tata Letak Utama (berserta global SEO Injector <head>)
-│   ├── 📂 lib/                  # Library Modul pihak ketiga, fetchers API Strapi, dan Caching
-│   ├── 📂 pages/                # File Based Route (Astro Endpoint .ts & Rangkaian Halaman .astro)
+│   ├── 📂 components/           # Reusable UI Components (Shadcn, <SEO/>, and .tsx)
+│   ├── 📂 config/               # Single-Source of Truth for Environment Variables & Zod Setup
+│   ├── 📂 layouts/              # Main Layout Templates (along with global SEO Injector <head>)
+│   ├── 📂 lib/                  # Third-party module libraries, Strapi API fetchers, and Caching
+│   ├── 📂 pages/                # File Based Route (Astro Endpoint .ts & Page Sequences .astro)
 │   ├── 📂 styles/               # Global CSS & Tailwind configs
-│   └── 📂 types/                # Sentralisasi Type System TypeScript (Interfaces Data Konten)
-├── 📄 .env.example              # Rujukan template konfigurasi untuk tim dev baru
-├── 📄 Dockerfile                # Image Container Blueprint (Alpine Base)
-├── 📄 astro.config.mjs          # Konfigurasi Astro untuk target Node Server (Standalone)
-├── 📄 components.json           # Registry Shadcn CLI
+│   └── 📂 types/                # Centralization of TypeScript Type System (Content Data Interfaces)
+├── 📄 .env.example              # Configuration template reference for new dev teams
+├── 📄 Dockerfile                # Container Image Blueprint (Alpine Base)
+├── 📄 astro.config.mjs          # Astro configuration for Node Server target (Standalone)
+├── 📄 components.json           # Shadcn CLI Registry
 └── 📄 tsconfig.json             # Engine Pathing Typescript Setup (*Alias resolution*)
 ```
 
 ---
 
-## 🛠️ Panduan Instalasi & Pengembangan Lanjut (Getting Started)
+## 🛠️ Installation Guide & Advanced Development (Getting Started)
 
-### Prasyarat (Prerequisites)
-- [Node.js](https://nodejs.org/) v20+ atau yang lebih tinggi
-- Instalasi [Docker](https://www.docker.com/) (Jika menguji replika server lokal)
+### Prerequisites
+- [Node.js](https://nodejs.org/) v20+ or higher
+- [Docker](https://www.docker.com/) Installed (If testing local server replicas)
 
-### Langkah Awal
-1. **Clone repository ini** sebagai skeleton/template project baru.
-2. Siapkan file konfigurasi lingkungan. Proyek ini akan menolak bekerja *(Crash/Error)* jika Env wajib tidak diisi.
+### Initial Steps
+1. **Clone this repository** as a skeleton/template for new projects.
+2. Prepare the environment configuration file. This project will refuse to work *(Crash/Error)* if mandatory Env variables are not filled.
    ```bash
    cp .env.example .env
    ```
-3. Buka file `.env` dan sediakan konfigurasi *Backend API Path* yang akurat. (Mis: `API_BACKEND_URL`).
-4. Install semua modul paket:
+3. Open the `.env` file and provide accurate *Backend API Path* configurations. (E.g., `API_BACKEND_URL`).
+4. Install all package modules:
    ```bash
    npm install
    ```
-5. Pemasangan Komponen Tambahan (Opsional):
-   Aplikasi ini dipersiapkan dengan _registry_ Shadcn UI. Jika ingin mendesain form atau dialog yang baru, gunakan perintah eksekusinya:
+5. Installation of Additional Components (Optional):
+   This application is prepared with the Shadcn UI _registry_. If you want to design new forms or dialogs, use its execution command:
    ```bash
-   npx shadcn@latest add <nama-komponen>
+   npx shadcn@latest add <component-name>
    ```
-6. Mulai Server Astro lokal:
+6. Start the local Astro Server:
    ```bash
    npm run dev
    ```
 
-### Alur Migrasi Template (Saat Reuse untuk Projek Lain)
-Demi menghindari kesalahan pada lingkungan klien proyek yang baru, selalu ikuti 3 Pilar Rombakan ini:
-1. **Modifikasi Type**: Restrukturisasi interface Payload `Article` pada `src/types/*.ts` menyesuaikan JSON response Headless CMS klien baru.
-2. **Ubah Informasi Bisnis JSON-LD**: Kunjungi `src/pages/index.astro`, lalu rombak nama perusahaan "LocalBusiness", "Telephone", dan "Address" pada blok Skema JSON-LD.
-3. **Pendaftaran Rule Environment**: Jika CMS baru mewajibkan token berbeda (Contoh: `BEARER_TOKEN`), segera deklarasikan di dalam file `src/config/env.server.ts` sebagai barisan instruksi tipe `z.string()`.
+### Template Migration Flow (When Reusing for Other Projects)
+To avoid setup errors in a new client's project environment, always follow these 3 Overhaul Pillars:
+1. **Modify Types**: Restructure the `Article` Payload interface in `src/types/*.ts` adapting to the new client's Headless CMS JSON response.
+2. **Change JSON-LD Business Information**: Visit `src/pages/index.astro`, then replace the "LocalBusiness" company name, "Telephone", and "Address" in the JSON-LD Schema block.
+3. **Environment Rule Registration**: If the new CMS requires a different token (Example: `BEARER_TOKEN`), promptly declare it inside the `src/config/env.server.ts` file as a `z.string()` type instruction sequence.
 
 ---
 
-## 🚀 Panduan Deployment (Deployment Strategy)
+## 🚀 Deployment Strategy
 
-### Standalone Node.js Lokal (Production Build Tester)
-Apabila Anda ingin merasakan performa nyata sebelum memasukannya ke kontainer:
+### Local Standalone Node.js (Production Build Tester)
+If you want to experience the real performance before putting it into a container:
 ```bash
 npm run build
-# Ini akan membuat folder /dist/server/ dan /dist/client/
-# Jalankan host lokal hasil build dengan:
+# This will create /dist/server/ and /dist/client/ folders
+# Run the built local host with:
 node dist/server/entry.mjs
 ```
 
 ### via VPS / Docker Container
-Aplikasi terkonfigurasi sangat kompatibel dengan server Linux (*Dockerized*):
+The configured application is highly compatible with Linux servers (*Dockerized*):
 ```bash
 docker build -t astro-enterprise-app .
 docker run -d -p 4321:4321 \
-  -e PUBLIC_SITE_URL=https://nama-domain-baru.com \
+  -e PUBLIC_SITE_URL=https://new-domain-name.com \
   -e API_BACKEND_URL=https://target-cms.com \
   --name web_frontend astro-enterprise-app
 ```
-*(Direkomendasikan meletakkan Nginx Reverse Proxy di depan Port `4321` tersebut sambil melampirkan sertifikat SSL)*.
+*(It is recommended to place an Nginx Reverse Proxy in front of that `4321` Port while attaching an SSL certificate)*.
 
 ---
-_Dikembangkan dengan efektivitas terbaik. Silakan jadikan rujukan dasar di setiap project SSR impian Anda._ ✨
+_Developed with maximum effectiveness. Feel free to use it as the foundational reference in every SSR project of your dreams._ ✨
