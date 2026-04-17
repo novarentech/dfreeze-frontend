@@ -1,4 +1,4 @@
-# Astro Enterprise Template 🚀 (ex-DFreeze Frontend)
+# Astro Template 🚀
 
 ![Astro](https://img.shields.io/badge/Astro-0C0E2B?style=for-the-badge&logo=Astro&logoColor=white)
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
