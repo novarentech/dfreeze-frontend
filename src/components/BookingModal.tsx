@@ -10,25 +10,37 @@ import {
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import { Textarea } from "./ui/textarea";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+import Stepper, { Step } from "./ui/Stepper";
+import { toast } from "sonner";
 
 export default function BookingModal({ variant = "default" }: { variant?: "default" | "cta" }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [status, setStatus] = useState("idle"); // idle | success | error
+  const [status, setStatus] = useState("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
   const [form, setForm] = useState({
+    deskripsiKeluhan: "",
     namaPemilik: "",
+    alamatPemilik: "",
+    nomorTelepon: "",
     namaHewan: "",
-    tanggalBooking: "",
+    jenisHewan: "",
+    jenisKelamin: "jantan",
+    umurHewan: "",
   });
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  }
+  };
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  const handleRadioChange = (value: string) => {
+    setForm((prev) => ({ ...prev, jenisKelamin: value }));
+  };
+
+  async function handleSubmit() {
     setIsLoading(true);
     setStatus("idle");
     setErrorMessage("");
@@ -43,19 +55,34 @@ export default function BookingModal({ variant = "default" }: { variant?: "defau
       const data = await res.json();
 
       if (res.ok) {
-        setStatus("success");
-        setForm({ namaPemilik: "", namaHewan: "", tanggalBooking: "" });
-        setTimeout(() => {
-          setIsOpen(false);
-          setStatus("idle");
-        }, 2000);
+        toast.success("Booking Berhasil!", {
+          description: "Tim kami akan segera menghubungi Anda untuk konfirmasi.",
+          position: "top-right"
+        });
+        setForm({
+            deskripsiKeluhan: "",
+            namaPemilik: "",
+            alamatPemilik: "",
+            nomorTelepon: "",
+            namaHewan: "",
+            jenisHewan: "",
+            jenisKelamin: "",
+            umurHewan: "",
+        });
+        setIsOpen(false);
       } else {
-        setStatus("error");
-        setErrorMessage(data.message || "Terjadi kesalahan. Silakan coba lagi.");
+        toast.error("Gagal melakukan booking", {
+          description: data.message || "Terjadi kesalahan. Silakan coba lagi.",
+          position: "top-right"
+        });
+        setIsOpen(false);
       }
     } catch {
-      setStatus("error");
-      setErrorMessage("Gagal terhubung ke server. Periksa koneksi Anda.");
+      toast.error("Masalah Koneksi", {
+        description: "Gagal terhubung ke server. Periksa koneksi Anda.",
+        position: "top-right"
+      });
+      setIsOpen(false);
     } finally {
       setIsLoading(false);
     }
@@ -67,26 +94,8 @@ export default function BookingModal({ variant = "default" }: { variant?: "defau
         <Button
           id="booking-trigger"
           onClick={() => setIsOpen(true)}
-          size="default"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md hover:shadow-lg transition-all"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="mr-1"
-          >
-            <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-            <line x1="16" x2="16" y1="2" y2="6" />
-            <line x1="8" x2="8" y1="2" y2="6" />
-            <line x1="3" x2="21" y1="10" y2="10" />
-          </svg>
           Booking Sekarang
         </Button>
       ) : (
@@ -103,169 +112,152 @@ export default function BookingModal({ variant = "default" }: { variant?: "defau
         </Button>
       )}
 
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <div className="flex items-center gap-3 mb-1">
-              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#2563eb"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M3 9a2 2 0 0 1 2-2h.93a2 2 0 0 0 1.664-.89l.812-1.22A2 2 0 0 1 10.07 4h3.86a2 2 0 0 1 1.664.89l.812 1.22A2 2 0 0 0 18.07 7H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                  <circle cx="12" cy="13" r="3" />
-                </svg>
-              </div>
-              <DialogTitle>Booking Konsultasi</DialogTitle>
-            </div>
-            <DialogDescription>
-              Isi formulir berikut untuk menjadwalkan kunjungan hewan peliharaan Anda.
-            </DialogDescription>
+      <Dialog open={isOpen} onOpenChange={(val) => {
+          setIsOpen(val);
+          if (!val) {
+            setStatus("idle");
+          }
+      }}>
+        <DialogContent className="overflow-y-auto max-h-[95vh]">
+          <DialogHeader className="mb-6 ">
+              <DialogTitle className="text-lg font-bold text-slate-800">Buat Janji Temu</DialogTitle>
+              <DialogDescription className="text-sm text-slate-500">
+              Isi formulir di bawah untuk membuat janji temu.
+              </DialogDescription>
           </DialogHeader>
-
-          {status === "success" ? (
-            <div className="flex flex-col items-center gap-3 py-6 text-center">
-              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="32"
-                  height="32"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#16a34a"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+          <Stepper 
+              onFinalStepCompleted={handleSubmit}
+                    backButtonText="Kembali"
+                    nextButtonText={isLoading ? "Loading..." : "Selanjutnya"}
+                    onStepChange={() => setErrorMessage("")}
+                    stepCircleContainerClassName="shadow-none border-none p-0 max-w-full"
+                    stepContainerClassName="p-0 mb-10"
+                    contentClassName="px-0"
+                    footerClassName="px-0"
                 >
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                  <path d="m9 11 3 3L22 4" />
-                </svg>
-              </div>
-              <p className="text-base font-semibold text-green-700">Booking Berhasil!</p>
-              <p className="text-sm text-slate-500">
-                Kami akan segera menghubungi Anda untuk konfirmasi jadwal.
-              </p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-4 mt-2">
-              <div className="space-y-1.5">
-                <Label htmlFor="namaPemilik">Nama Pemilik</Label>
-                <Input
-                  id="namaPemilik"
-                  name="namaPemilik"
-                  placeholder="Contoh: Budi Santoso"
-                  value={form.namaPemilik}
-                  onChange={handleChange}
-                  required
-                  disabled={isLoading}
-                />
-              </div>
+                    <Step>
+                        <div className="space-y-6">
+                            <div className="space-y-1">
+                                <h3 className="font-bold text-slate-800">Keluhan Kesehatan Hewan</h3>
+                                <p className="text-xs text-slate-500">Jelaskan gejala atau masalah kesehatan yang dialami hewan peliharaan Anda</p>
+                            </div>
+                            <div className="space-y-3">
+                                <Label htmlFor="deskripsiKeluhan" className="text-slate-700 font-bold">Deskripsi Keluhan <span className="text-red-500">*</span></Label>
+                                <Textarea
+                                    id="deskripsiKeluhan"
+                                    name="deskripsiKeluhan"
+                                    placeholder="Contoh: Kucing saya tidak mau makan sejak 2 hari yang lalu, terlihat lemas, dan sering bersembunyi..."
+                                    value={form.deskripsiKeluhan}
+                                    onChange={handleChange}
+                                    className="min-h-[140px] placeholder:text-slate-400 placeholder:text-xs focus:bg-white transition-colors"
+                                    required
+                                />
+                            </div>
+                        </div>
+                    </Step>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="namaHewan">Nama Hewan Peliharaan</Label>
-                <Input
-                  id="namaHewan"
-                  name="namaHewan"
-                  placeholder="Contoh: Mochi (Kucing Persian)"
-                  value={form.namaHewan}
-                  onChange={handleChange}
-                  required
-                  disabled={isLoading}
-                />
-              </div>
+                    <Step>
+                        <div className="space-y-6">
+                            <div className="space-y-1">
+                                <h3 className="font-bold text-slate-800">Data Diri Pemilik</h3>
+                                <p className="text-xs text-slate-500">Informasi kontak untuk komunikasi dan administrasi</p>
+                            </div>
+                            <div className="grid gap-5">
+                                <div className="space-y-2">
+                                    <Label htmlFor="namaPemilik" className="text-slate-700 font-bold">Nama Lengkap <span className="text-red-500">*</span></Label>
+                                    <Input id="namaPemilik" name="namaPemilik" placeholder="Masukkan Nama Lengkap" value={form.namaPemilik} onChange={handleChange} required />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="alamatPemilik" className="text-slate-700 font-bold">Alamat Lengkap <span className="text-red-500">*</span></Label>
+                                    <Textarea id="alamatPemilik" name="alamatPemilik" placeholder="Contoh: Jl. Pandega Bhakti No 28" value={form.alamatPemilik} onChange={handleChange} className="min-h-[80px]" required />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="nomorTelepon" className="text-slate-700 font-bold">Nomor Telepon <span className="text-red-500">*</span></Label>
+                                    <Input id="nomorTelepon" name="nomorTelepon" placeholder="08XXXXXXXXXX" value={form.nomorTelepon} onChange={handleChange} required />
+                                </div>
+                            </div>
+                        </div>
+                    </Step>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="tanggalBooking">Tanggal Kunjungan</Label>
-                <Input
-                  id="tanggalBooking"
-                  name="tanggalBooking"
-                  type="date"
-                  value={form.tanggalBooking}
-                  onChange={handleChange}
-                  required
-                  disabled={isLoading}
-                  min={new Date().toISOString().split("T")[0]}
-                />
-              </div>
+                    <Step>
+                        <div className="space-y-6">
+                            <div className="space-y-1">
+                                <h3 className="font-bold text-slate-800">Data Hewan Peliharaan</h3>
+                                <p className="text-xs text-slate-500">Informasi detail tentang hewan peliharaan Anda</p>
+                            </div>
+                            <div className="grid gap-5">
+                                <div className="space-y-2">
+                                    <Label htmlFor="namaHewan" className="text-slate-700 font-bold">Nama Hewan <span className="text-red-500">*</span></Label>
+                                    <Input id="namaHewan" name="namaHewan" placeholder="Masukkan Nama Hewan Peliharaan Anda" value={form.namaHewan} onChange={handleChange} required />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="jenisHewan" className="text-slate-700 font-bold">Jenis Hewan <span className="text-red-500">*</span></Label>
+                                    <Input id="jenisHewan" name="jenisHewan" placeholder="Contoh: Kucing" value={form.jenisHewan} onChange={handleChange} required />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="umurHewan" className="text-slate-700 font-bold">Umur <span className="text-red-500">*</span></Label>
+                                    <Input id="umurHewan" name="umurHewan" placeholder="Contoh: 2 Tahun" value={form.umurHewan} onChange={handleChange} required />
+                                </div>
+                                <div className="space-y-3">
+                                    <Label className="text-slate-700 font-bold">Jenis Kelamin <span className="text-red-500">*</span></Label>
+                                    <RadioGroup value={form.jenisKelamin} onValueChange={handleRadioChange} className="flex gap-4">
+                                        <div className="flex items-center space-x-2">
+                                            <RadioGroupItem value="jantan" id="jantan" className="border-primary text-primary" />
+                                            <Label htmlFor="jantan" className="font-normal cursor-pointer text-sm">Jantan</Label>
+                                        </div>
+                                        <div className="flex items-center space-x-2">
+                                            <RadioGroupItem value="betina" id="betina" className="border-primary text-primary" />
+                                            <Label htmlFor="betina" className="font-normal cursor-pointer text-sm">Betina</Label>
+                                        </div>
+                                    </RadioGroup>
+                                </div>
+                            </div>
+                        </div>
+                    </Step>
 
-              {status === "error" && (
-                <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700 flex items-start gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="mt-0.5 shrink-0"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <line x1="12" x2="12" y1="8" y2="12" />
-                    <line x1="12" x2="12.01" y1="16" y2="16" />
-                  </svg>
-                  {errorMessage}
-                </div>
-              )}
+                    <Step>
+                        <div className="space-y-6">
+                            <div className="space-y-1">
+                                <h3 className="font-bold text-slate-800">Review Booking Anda</h3>
+                                <p className="text-xs text-slate-500">Pastikan semua informasi sudah benar sebelum mengirim</p>
+                            </div>
+                            
+                            <div className="bg-sky-50/50 rounded-2xl p-6 space-y-6">
+                                <div className="space-y-3">
+                                    <div className="flex justify-between items-end border-b border-sky-200/50 pb-1">
+                                        <h4 className="text-primary font-bold text-sm tracking-wide uppercase">Keluhan</h4>
+                                    </div>
+                                    <p className="text-slate-600 text-sm leading-relaxed">{form.deskripsiKeluhan}</p>
+                                </div>
 
-              <div className="flex gap-3 pt-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="flex-1"
-                  onClick={() => setIsOpen(false)}
-                  disabled={isLoading}
-                >
-                  Batal
-                </Button>
-                <Button
-                  id="booking-submit"
-                  type="submit"
-                  className="flex-1"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <span className="flex items-center gap-2">
-                      <svg
-                        className="animate-spin h-4 w-4"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                        />
-                      </svg>
-                      Mengirim...
-                    </span>
-                  ) : (
-                    "Konfirmasi Booking"
-                  )}
-                </Button>
-              </div>
-            </form>
-          )}
-        </DialogContent>
-      </Dialog>
-    </>
-  );
-}
+                                    <div className="space-y-3">
+                                        <div className="flex justify-between items-end border-b border-sky-200/50 pb-1">
+                                            <h4 className="text-primary font-bold text-sm tracking-wide uppercase">Data Pemilik</h4>
+                                        </div>
+                                        <div className="grid grid-cols-[80px_1fr] gap-x-2 gap-y-1.5 text-xs text-slate-600">
+                                            <span className="font-medium">Nama</span><span>: {form.namaPemilik}</span>
+                                            <span className="font-medium">Alamat</span><span>: {form.alamatPemilik}</span>
+                                            <span className="font-medium">Telepon</span><span>: {form.nomorTelepon}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-3">
+                                        <div className="flex justify-between items-end border-b border-sky-200/50 pb-1">
+                                            <h4 className="text-primary font-bold text-sm tracking-wide uppercase">Data Hewan</h4>
+                                        </div>
+                                        <div className="grid grid-cols-[80px_1fr] gap-x-2 gap-y-1.5 text-xs text-slate-600">
+                                            <span className="font-medium">Nama</span><span>: {form.namaHewan}</span>
+                                            <span className="font-medium">Jenis</span><span>: {form.jenisHewan}</span>
+                                            <span className="font-medium">Kelamin</span><span>: {form.jenisKelamin}</span>
+                                            <span className="font-medium">Umur</span><span>: {form.umurHewan}</span>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                    </Step>
+                </Stepper>
+          </DialogContent>
+        </Dialog>
+      </>
+    );
+  }

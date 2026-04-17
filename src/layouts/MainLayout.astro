@@ -3,6 +3,7 @@ import SEO from '@/components/SEO/SEO.astro';
 import GoogleAnalytics from '@/components/SEO/GoogleAnalytics.astro';
 import Navbar from '@/components/layout/Navbar.astro';
 import Footer from '@/components/layout/Footer.astro';
+import { Toaster } from "@/components/ui/sonner";
 
 import '../styles/global.css';
 
@@ -28,5 +29,6 @@ const { title, description, image, type, jsonld } = Astro.props;
     </main>
 
     <Footer />
+    <Toaster richColors position="top-right" client:load/>
   </body>
 </html>
