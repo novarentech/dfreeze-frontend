@@ -1,0 +1,57 @@
+---
+import { Image } from "astro:assets";
+import aboutUs from "@/assets/image/aboutUs.png";
+import { CheckCircle2 } from "lucide-react";
+
+const highlights = [
+  "Tim Dokter Hewan Berpengalaman More than 10 Years",
+  "Fasilitas Medis Modern & Terkini",
+  "Pelayanan Ramah & Penuh Empati",
+  "Komitmen Higienitas Standar Internasional",
+];
+---
+
+<section id="tentang-kami" class="py-20 bg-white overflow-hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+      <!-- Content Column -->
+      <div class="space-y-14 lg:pt-20 lg:order-2">
+        <div class="space-y-8">
+          <p class="text-primary text-sm font-bold uppercase tracking-widest">TENTANG KAMI</p>
+          <h2 class="text-3xl md:text-4xl font-bold text-slate-800 leading-tight">
+            Dari Sebuah Mimpi Kecil, Menjadi <span class="text-primary">Kepercayaan</span> Banyak Keluarga
+          </h2>
+          <p class="text-slate-600 text-lg leading-relaxed">
+            Berdiri sejak tahun 2014, D'Freeze Vet Clinic telah menjadi mitra terpercaya bagi ribuan pemilik hewan peliharaan di Yogyakarta. Kami percaya bahwa setiap hewan layak mendapatkan perawatan medis terbaik dengan standar profesionalisme yang tinggi dan sentuhan kasih sayang.
+          </p>
+        </div>
+        <div class="flex flex-row lg:justify-start justify-center items-center gap-8 text-primary">
+            <div class="text-center space-y-2">
+                <p class="text-5xl">50+</p>
+                <p>Pasien Tiap Bulan</p>
+            </div>
+            <div class="text-center space-y-2">
+                <p class="text-5xl">10+</p>
+                <p>Tahun Pengalaman</p>
+            </div>
+        </div>
+    </div>
+    
+      <!-- Image Column -->
+      <div class="relative group lg:order-1">
+          <Image 
+            src={aboutUs} 
+            alt="Tim D'Freeze Vet Clinic" 
+            class="w-full h-auto object-cover scale-90 hover:scale-95 transition-transform duration-500"
+          />
+      </div>
+</section>
+
+<style>
+  @keyframes bounce-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  .animate-bounce-slow {
+    animation: bounce-slow 4s infinite ease-in-out;
+  }
+</style>
