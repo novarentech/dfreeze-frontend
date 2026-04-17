@@ -1,0 +1,105 @@
+---
+import logo from '@/assets/logo.png';
+
+const navItems = [
+  { href: '/about', label: 'Tentang Kami' },
+  { href: '/services', label: 'Layanan' },
+  { href: '/articles', label: 'Artikel' },
+  { href: '/qa', label: 'Q&A' },
+]
+
+const serviceItems = [
+  { label: 'Vaksinasi' },
+  { label: 'Pemeriksaan Umum' },
+  { label: 'Perawatan Gigi & Mulut' },
+  { label: 'Bedah dan Operasi' },
+  { label: 'Grooming & Perawatan' },
+  { label: 'Konsultasi Nutrisi' },
+]
+
+const workHour = [
+  { day: 'Senin - Jumat', time: '16.00 - 20.00 WIB' },
+  { day: 'Sabtu', time: '10.00 - 17.00 WIB' },
+  { day: 'Minggu', time: 'Tutup / Emergency Only' },
+]
+---
+
+<footer class="mt-24 bg-primary text-white">
+  <div class="container mx-auto px-4 py-12">
+
+    <!-- GRID UTAMA -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-10 items-start">
+
+      <!-- BRAND -->
+      <div class="md:col-span-1">
+        <div class="flex items-center gap-3 mb-4">
+          <img src={logo.src} alt="Logo" class="w-14 h-14 object-cover rounded-xl" />
+          <div>
+            <p class="text-xs font-semibold">KLINIK HEWAN</p>
+            <p class="text-base font-semibold">D'FREEZE & SON</p>
+          </div>
+        </div>
+
+        <p class="text-sm leading-relaxed md:text-justify max-w-xs">
+          Klinik hewan terpercaya di Sleman yang menghadirkan layanan medis profesional
+          dengan pendekatan penuh empati untuk setiap hewan peliharaan.
+        </p>
+      </div>
+
+      <!-- MENU AREA -->
+      <div class="md:col-span-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+
+        <!-- NAVIGASI -->
+        <div>
+          <h3 class="text-sm font-semibold uppercase tracking-wider mb-4">Navigasi</h3>
+          <ul class="space-y-2 text-sm">
+            {navItems.map((item) => (
+              <li>
+                <a href={item.href} class="hover:text-white/80 transition">
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- LAYANAN -->
+        <div>
+          <h3 class="text-sm font-semibold uppercase tracking-wider mb-4">Layanan</h3>
+          <ul class="space-y-2 text-sm">
+            {serviceItems.map((item) => (
+              <li class="hover:text-white/80 transition">
+                {item.label}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- JAM BUKA -->
+        <div>
+          <h3 class="text-sm font-semibold uppercase tracking-wider mb-4">Jam Buka</h3>
+          <ul class="space-y-2 text-sm">
+            {workHour.map((item) => (
+              <li class="flex justify-between">
+                <span>{item.day}</span>
+                <span>:</span>
+                <span class="text-white/80">{item.time}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- FOOTER BOTTOM -->
+    <div class="mt-12 pt-6 border-t border-white/20 flex flex-col md:flex-row justify-between items-center gap-2 text-xs text-white/70">
+      <p>&copy; {new Date().getFullYear()} Klinik Hewan D'FREEZE & SON. All rights reserved.</p>
+      <p class="text-center md:text-right">
+        Jl. Raya Stadion Maguwoharjo, Ngemplak, Sleman, DIY 55584
+      </p>
+    </div>
+
+  </div>
+</footer>

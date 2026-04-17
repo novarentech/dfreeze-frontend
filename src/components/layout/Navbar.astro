@@ -69,23 +69,23 @@ const navLinks = [
         <div class="overflow-hidden">
           <div class="pb-4 border-t border-slate-100 pt-2 space-y-1">
             {navLinks.map((link) => (
-          <a
-            href={link.href}
-            class={`block px-3 py-2.5 text-sm font-medium rounded-lg mb-0.5 transition-colors ${
-              link.active
-                ? 'bg-teal-50 border-primary text-primary font-semibold'
-                : 'hover:text-primary hover:bg-teal-50'
-            }`}
-          >
-            {link.label}
-          </a>
-        ))}
-        <a
-          href="/kontak"
-          class="mt-3 block text-center px-5 py-2.5 rounded-full bg-[#F5BC2B] hover:bg-[#e6ad20] text-sm font-semibold transition-colors"
-        >
-          Hubungi Kami
-        </a>
+                <a
+                    href={link.href}
+                    class={`block px-3 py-2.5 text-sm font-medium rounded-lg mb-0.5 transition-colors ${
+                    link.active
+                        ? 'bg-teal-50 border-primary text-primary font-semibold'
+                        : 'hover:text-primary hover:bg-teal-50'
+                    }`}
+                >
+                    {link.label}
+                </a>
+            ))}
+            <a
+            href="/kontak"
+            class="mt-3 block text-center px-5 py-2.5 rounded-full bg-[#F5BC2B] hover:bg-[#e6ad20] text-sm font-semibold transition-colors"
+            >
+            Hubungi Kami
+            </a>
       </div>
     </div>
   </div>
