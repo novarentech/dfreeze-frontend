@@ -1,0 +1,26 @@
+---
+export const prerender = false;
+
+import MainLayout from '@/layouts/MainLayout.astro';
+
+---
+
+<MainLayout
+  title="Artikel Kesehatan"
+  description="Baca artikel dan tips kesehatan hewan peliharaan dari dokter hewan berpengalaman DFreeze Vet Clinic."
+>
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+  <!-- Header -->
+  <section class="py-14 border-b border-slate-100">
+    <div class="">
+      <span class="text-primary text-sm font-semibold uppercase tracking-widest">Q&A</span>
+      <h1 class="mt-3 text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight">
+        Punya <span class="text-primary">pertanyaan</span> seputar hewan peliharaan Anda? 
+      </h1>
+      <p class="mt-4 text-lg text-slate-500 leading-relaxed">
+        Tanyakan apa saja seputar kesehatan dan perawatan di sini
+      </p>
+    </div>
+  </section>
+  </div>
+</MainLayout>

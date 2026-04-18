@@ -6,6 +6,7 @@ import MainLayout from '@/layouts/MainLayout.astro';
 import { getArticles } from '@/lib/api/articles';
 import type { Article } from '@/types/article';
 import { getSummary } from '@/lib/utils/content';
+import PopularArticles from '@/components/section/PopularArticles.astro';
 
 // Fetch artikel dari Strapi (SSR)
 let articles: Article[] = [];
@@ -24,19 +25,27 @@ try {
   title="Artikel Kesehatan"
   description="Baca artikel dan tips kesehatan hewan peliharaan dari dokter hewan berpengalaman DFreeze Vet Clinic."
 >
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
   <!-- Header -->
   <section class="py-14 border-b border-slate-100">
-    <div class="max-w-3xl">
-      <span class="text-blue-600 text-sm font-semibold uppercase tracking-widest">Blog & Edukasi</span>
-      <h1 class="mt-3 text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight">
-        Artikel Kesehatan Hewan
+    <div class="">
+      <span class="text-primary text-sm font-semibold uppercase tracking-widest">Artikel</span>
+      <h1 class="mt-3 text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight">
+        Tips & Informasi Seputar Kesehatan Hewan Peliharaan
       </h1>
       <p class="mt-4 text-lg text-slate-500 leading-relaxed">
-        Tips, panduan, dan informasi kesehatan terkini dari tim dokter hewan profesional kami untuk membantu Anda merawat hewan peliharaan.
+Temukan artikel-artikel pilihan dan tips perawatan harian hingga panduan menghadapi kondisi darurat.
       </p>
     </div>
   </section>
 
+  <!-- Artikel Populer -->
+   <PopularArticles/>
+
+
+  <!-- Artikel Baru -->
+
+  <!-- Artikel Lain -->
   <!-- Content -->
   <section class="py-14">
     {fetchError && (
@@ -132,4 +141,5 @@ try {
       </div>
     )}
   </section>
+  </div>
 </MainLayout>

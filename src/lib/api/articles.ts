@@ -43,7 +43,6 @@ export async function getArticles(): Promise<Article[]> {
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
   const cacheKey = `article-${slug}`;
 
-  // ambil cache dulu (kalau ada)
   const cached = getCache<Article>(cacheKey);
 
   try {
