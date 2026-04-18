@@ -1,6 +1,5 @@
 ---
 import GalleryGrid from "../GalleryGrid";
-import bgGallery from "@/assets/image/bgGallery.png";
 
 import bedah from "@/assets/image/services/bedah_operasi.jpg";
 import grooming from "@/assets/image/services/grooming.jpg";
@@ -8,36 +7,26 @@ import nutrisi from "@/assets/image/services/konsultasi_nutrisi.jpg";
 import pemeriksaan from "@/assets/image/services/pemeriksaan_umum.jpg";
 import mulut from "@/assets/image/services/perawatan_mulut.jpg";
 import vaksin from "@/assets/image/services/vaksinasi.jpg";
-import { Image } from "astro:assets";
 
 const serviceImages = [bedah, grooming, nutrisi, pemeriksaan, mulut, vaksin];
 
 // Generate an array of 15 images by cycling through the available service images
-const images = Array.from({ length: 15 }, (_, i) => ({
-  src: serviceImages[i % serviceImages.length].src
-}));
+// Passing the full image object to provide width/height metadata to the React component
+const images = Array.from({ length: 15 }, (_, i) => serviceImages[i % serviceImages.length]);
 ---
 
-<section class="relative pt-10 md:pt-16 lg:pt-20 w-full min-h-fit md:min-h-[calc(100vh-112px)] overflow-hidden">
-    <!-- Background -->
-    <div class="absolute inset-0 -z-10">
-        <!-- Optimized Background Image -->
-        <Image
-            src={bgGallery} 
-            alt="Hero Background Pattern" 
-            class="absolute inset-0 w-full h-full object-cover"
-            loading="eager"
-            fetchpriority="high"
-        />
-        <!-- Decorative Overlays -->
-        <div class="absolute inset-0 bg-linear-to-b from-primary/80 via-primary/60 to-primary/95"></div>
-    </div>
-    <div class=" text-left md:text-center p-4">
-      <span class="text-yellow-400 text-sm font-bold uppercase tracking-widest">GALERI KLINIK</span>
-      <h2 class="mt-3 text-3xl md:text-4xl font-bold text-white leading-tight">
-        Semua yang Dibutuhkan Hewan Peliharaanmu
+<section id="galeri" class="w-full bg-white overflow-hidden py-10 md:py-20 border-b border-slate-50">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 mb-10">
+    <p class="text-primary text-sm font-bold uppercase tracking-widest mb-3">GALERI KLINIK</p>
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <h2 class="text-3xl md:text-5xl font-bold text-slate-800 leading-tight max-w-2xl">
+        Momen Keseharian di <span class="text-primary tracking-tight">DFreeze Clinic</span>
       </h2>
-      <p class="mt-3 text-lg md:text-xl text-white leading-tight">Setiap momen di klinik kami adalah bentuk dedikasi dalam merawat dan menjaga kesehatan hewan peliharaan.</p>
+      <p class="text-slate-500 max-w-sm text-sm md:text-base leading-relaxed">
+        Cuplikan dedikasi kami dalam merawat dan menjaga kesehatan seluruh hewan kesayangan Anda.
+      </p>
     </div>
+  </div>
+  
   <GalleryGrid images={images} client:load />
 </section>
