@@ -12,38 +12,41 @@ const highlights = [
 ---
 
 <section id="tentang-kami" class="py-20 overflow-hidden">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
       <!-- Content Column -->
       <div class="space-y-14 lg:pt-20 lg:order-2">
-        <div class="space-y-8">
+        <div class="space-y-8 text-center lg:text-left">
           <p class="text-primary text-sm font-bold uppercase tracking-widest">TENTANG KAMI</p>
           <h2 class="text-3xl md:text-4xl font-bold text-slate-800 leading-tight">
             Dari Sebuah Mimpi Kecil, Menjadi <span class="text-primary">Kepercayaan</span> Banyak Keluarga
           </h2>
-          <p class="text-slate-600 text-lg leading-relaxed">
+          <p class="text-slate-600 text-lg leading-relaxed max-w-2xl mx-auto lg:mx-0">
             Berdiri sejak tahun 2014, D'Freeze Vet Clinic telah menjadi mitra terpercaya bagi ribuan pemilik hewan peliharaan di Yogyakarta. Kami percaya bahwa setiap hewan layak mendapatkan perawatan medis terbaik dengan standar profesionalisme yang tinggi dan sentuhan kasih sayang.
           </p>
         </div>
         <div class="flex flex-row lg:justify-start justify-center items-center gap-8 text-primary">
             <div class="text-center space-y-2">
-                <p class="text-5xl">50+</p>
-                <p>Pasien Tiap Bulan</p>
+                <p class="text-5xl font-bold">50+</p>
+                <p class="text-sm font-medium uppercase tracking-wide">Pasien Tiap Bulan</p>
             </div>
             <div class="text-center space-y-2">
-                <p class="text-5xl">10+</p>
-                <p>Tahun Pengalaman</p>
+                <p class="text-5xl font-bold">10+</p>
+                <p class="text-sm font-medium uppercase tracking-wide">Tahun Pengalaman</p>
             </div>
         </div>
     </div>
     
       <!-- Image Column -->
-      <div class="relative group lg:order-1">
+      <div class="relative group lg:order-1 flex justify-center lg:justify-start">
           <Image 
             src={aboutUs} 
             alt="Tim D'Freeze Vet Clinic" 
-            class="w-full h-auto object-cover scale-90 hover:scale-95 transition-transform duration-500"
+            class="w-full max-w-[500px] lg:max-w-none h-auto object-cover scale-90 hover:scale-95 transition-transform duration-500"
           />
       </div>
+    </div>
+  </div>
 </section>
 
 <style>

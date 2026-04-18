@@ -22,10 +22,8 @@ const { title, description, image, type, jsonld } = Astro.props;
     <Navbar />
 
     <!-- Main Content -->
-    <main class="container mx-auto">
-      <div class="px-4 sm:px-6 lg:px-8 pt-24">
-        <slot />
-      </div>
+    <main class="w-full pt-28">
+      <slot />
     </main>
 
     <Footer />
