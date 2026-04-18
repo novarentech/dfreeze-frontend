@@ -2,6 +2,7 @@
 export const prerender = false;
 
 import MainLayout from '@/layouts/MainLayout.astro';
+import CTA from '@/components/section/CTA.astro';
 import { BlocksRenderer } from '@strapi/blocks-react-renderer';
 import { getArticleBySlug } from '@/lib/api/articles';
 import { getThumbnailUrl } from "@/lib/utils/media";
@@ -142,4 +143,5 @@ const articleSchema = {
       <p class="text-slate-400 italic">Konten artikel tidak tersedia.</p>
     )}
   </article>
+  <CTA />
 </MainLayout>
