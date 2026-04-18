@@ -1,0 +1,213 @@
+---
+import { Image } from "astro:assets";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+import testi1 from "@/assets/image/testimonials/testi1.jpg";
+import testi2 from "@/assets/image/testimonials/testi2.jpg";
+import testi3 from "@/assets/image/testimonials/testi3.jpg";
+
+const testimonials = [
+  {
+    quote: "Kami percaya bahwa setiap hewan berhak mendapatkan perawatan terbaik dengan penuh perhatian dan kasih sayang. Di klinik kami, kesehatan dan kenyamanan hewan peliharaan adalah prioritas utama.",
+    author: "Dr.drh. Dhirgo Adji, MP",
+    role: "Lead Veterinarian",
+    image: testi1
+  },
+  {
+    quote: "Melihat binar bahagia di mata pemilik saat anabul mereka pulih adalah alasan utama kami berdedikasi setiap hari dengan standar medis tertinggi.",
+    author: "drh. Sarah Wijaya",
+    role: "Senior Vet Surgeon",
+    image: testi2
+  },
+  {
+    quote: "Setiap kasus medis adalah cerita harapan. Kami berkomitmen untuk mendengarkan dan memberikan solusi yang paling tepat bagi sahabat bulu Anda.",
+    author: "drh. Budi Pratama",
+    role: "Pet Care Specialist",
+    image: testi3
+  }
+];
+---
+
+<section id="testimonials" class="py-24 overflow-hidden">
+  <div class="container mx-auto px-4">
+    <!-- Header -->
+    <div class="mb-16">
+      <p class="text-primary text-sm font-bold uppercase tracking-widest mb-3">TIM KAMI</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-slate-800 leading-tight">
+        Dipercayakan kepada Orang-Orang yang Tepat
+      </h2>
+    </div>
+
+    <!-- Testimonial Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-center">
+      
+      <!-- Left: Interactive Gallery -->
+      <div class="lg:col-span-5 relative flex items-center justify-center h-[450px] md:h-[550px]">
+        {testimonials.map((testi, index) => (
+          <div 
+            class="testimonial-image absolute transition-all duration-700 ease-in-out"
+            data-index={index}
+          >
+            <div class="relative w-full h-full rounded-[2.5rem] overflow-hidden shadow-2xl">
+               <Image 
+                src={testi.image} 
+                alt={testi.author} 
+                class="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Right: Quote Content -->
+      <div class="lg:col-span-7 space-y-12">
+        <!-- Quote Icon -->
+        <div class="text-slate-200">
+            <svg width="57" height="51" viewBox="0 0 57 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50.626 50.625C52.1179 50.625 53.5486 50.0324 54.6035 48.9775C55.6584 47.9226 56.251 46.4918 56.251 45V31.2637C56.251 29.7719 55.6584 28.3412 54.6035 27.2863C53.5486 26.2314 52.1179 25.6388 50.626 25.6388H42.8185C42.8185 23.6625 42.9348 21.6863 43.1673 19.71C43.516 17.6175 44.0973 15.7575 44.911 14.13C45.7248 12.5025 46.7729 11.2219 48.0554 10.2881C49.3304 9.24187 50.9579 8.71875 52.9379 8.71875V0C49.6829 0 46.8329 0.6975 44.3879 2.0925C41.9598 3.46992 39.8737 5.37724 38.2848 7.6725C36.6851 10.199 35.5072 12.9689 34.7973 15.8737C34.0794 19.0786 33.7284 22.3546 33.751 25.6388V45C33.751 46.4918 34.3437 47.9226 35.3986 48.9775C36.4534 50.0324 37.8842 50.625 39.376 50.625H50.626ZM16.876 50.625C18.3679 50.625 19.7986 50.0324 20.8535 48.9775C21.9084 47.9226 22.501 46.4918 22.501 45V31.2637C22.501 29.7719 21.9084 28.3412 20.8535 27.2863C19.7986 26.2314 18.3679 25.6388 16.876 25.6388H9.06853C9.06853 23.6625 9.18477 21.6863 9.41727 19.71C9.76977 17.6175 10.351 15.7575 11.161 14.13C11.9748 12.5025 13.0229 11.2219 14.3054 10.2881C15.5804 9.24187 17.2079 8.71875 19.1879 8.71875V0C15.9329 0 13.0829 0.6975 10.6379 2.0925C8.20982 3.46992 6.12369 5.37724 4.53478 7.6725C2.93509 10.199 1.75719 12.9689 1.04728 15.8737C0.329433 19.0786 -0.0215733 22.3546 0.00102541 25.6388V45C0.00102541 46.4918 0.593657 47.9226 1.64855 48.9775C2.70344 50.0324 4.13418 50.625 5.62603 50.625H16.876Z" fill="black" fill-opacity="0.19"/>
+            </svg>
+        </div>
+
+        <div class="relative min-h-[250px] md:min-h-[200px]">
+          {testimonials.map((testi, index) => (
+            <div 
+              class="testimonial-text absolute inset-0 transition-all duration-700 ease-in-out opacity-0 translate-y-4"
+              data-index={index}
+            >
+              <p class="text-slate-600 text-lg md:text-xl leading-relaxed font-medium mb-8">
+                {testi.quote}
+              </p>
+              <div class="space-y-1">
+                <p class="font-bold text-slate-900 text-xl">{testi.author}</p>
+                <p class="text-slate-400 font-medium">{testi.role}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex gap-4 pt-10">
+          <button id="prev-testi" class="w-12 h-12 rounded-full bg-[#3BB0C9] text-white flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-all">
+            <ChevronLeft size={24} />
+          </button>
+          <button id="next-testi" class="w-12 h-12 rounded-full bg-[#3BB0C9] text-white flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-all">
+            <ChevronRight size={24} />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Base styles for the gallery images */
+  .testimonial-image {
+    width: 220px;
+    height: 320px;
+    opacity: 0.1;
+    z-index: 0;
+    visibility: hidden;
+  }
+
+  @media (min-width: 768px) {
+    .testimonial-image {
+      width: 260px;
+      height: 400px;
+    }
+  }
+
+  /* Active state for center image */
+  .testimonial-image[data-status="active"] {
+    width: 280px;
+    height: 420px;
+    opacity: 1;
+    z-index: 20;
+    transform: translateX(0) scale(1.1);
+    visibility: visible;
+  }
+
+  @media (min-width: 768px) {
+    .testimonial-image[data-status="active"] {
+      width: 340px;
+      height: 500px;
+    }
+  }
+
+  /* Position for side images */
+  .testimonial-image[data-status="prev"] {
+    transform: translateX(-120px) scale(0.8);
+    opacity: 0.4;
+    z-index: 10;
+    visibility: visible;
+  }
+
+  .testimonial-image[data-status="next"] {
+    transform: translateX(120px) scale(0.8);
+    opacity: 0.4;
+    z-index: 10;
+    visibility: visible;
+  }
+
+  @media (min-width: 768px) {
+    .testimonial-image[data-status="prev"] {
+      transform: translateX(-150px) scale(0.85);
+    }
+    .testimonial-image[data-status="next"] {
+      transform: translateX(150px) scale(0.85);
+    }
+  }
+
+  /* Hidden state for others */
+  .testimonial-image[data-status="hidden"] {
+    transform: scale(0.5);
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+  }
+</style>
+
+<script>
+  let currentIndex = 0;
+  const images = document.querySelectorAll('.testimonial-image');
+  const texts = document.querySelectorAll('.testimonial-text');
+  const count = images.length;
+
+  function update() {
+    images.forEach((img, i) => {
+      let status = 'hidden';
+      if (i === currentIndex) status = 'active';
+      else if (i === (currentIndex - 1 + count) % count) status = 'prev';
+      else if (i === (currentIndex + 1) % count) status = 'next';
+      
+      img.setAttribute('data-status', status);
+    });
+
+    texts.forEach((text, i) => {
+      const el = text as HTMLElement;
+      if (i === currentIndex) {
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+        el.style.pointerEvents = 'auto';
+        el.style.visibility = 'visible';
+      } else {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.pointerEvents = 'none';
+        el.style.visibility = 'hidden';
+      }
+    });
+  }
+
+  document.getElementById('next-testi')?.addEventListener('click', () => {
+    currentIndex = (currentIndex + 1) % count;
+    update();
+  });
+
+  document.getElementById('prev-testi')?.addEventListener('click', () => {
+    currentIndex = (currentIndex - 1 + count) % count;
+    update();
+  });
+
+  // Initial update
+  update();
+</script>
