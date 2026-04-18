@@ -1,0 +1,147 @@
+---
+import { Image } from "astro:assets";
+import { ChevronLeft, ChevronRight, ArrowRight, Pill, Microscope, Stethoscope, Scissors } from "lucide-react";
+import graphIcon from "@/assets/icons/graph.svg";
+import shieldIcon from "@/assets/icons/shield.svg";
+import sanitizerIcon from "@/assets/icons/sanitizer.svg";
+import loveIcon from "@/assets/icons/love.svg";
+
+// Import Background Images
+import examinationImg from "@/assets/image/services/pemeriksaan_umum.jpg";
+import vaccinationImg from "@/assets/image/services/vaksinasi.jpg";
+import surgeryImg from "@/assets/image/services/bedah_operasi.jpg";
+import groomingImg from "@/assets/image/services/grooming.jpg";
+import nutritionImg from "@/assets/image/services/konsultasi_nutrisi.jpg";
+import dentalImg from "@/assets/image/services/perawatan_mulut.jpg";
+
+const services = [
+  {
+    title: "Pemeriksaan Umum",
+    image: examinationImg,
+  },
+  {
+    title: "Vaksinasi",
+    image: vaccinationImg,
+  },
+  {
+    title: "Bedah & Operasi",
+    image: surgeryImg,
+  },
+  {
+    title: "Grooming & Spa",
+    image: groomingImg,
+  },
+  {
+    title: "Konsultasi Nutrisi",
+    image: nutritionImg,
+  },
+  {
+    title: "Perawatan Gigi",
+    image: dentalImg,
+  }
+];
+---
+
+<section id="layanan" class="py-24 relative overflow-hidden">
+  <div class="container mx-auto px-4 relative">
+    <div class="mb-16 md:text-center text-left">
+      <p class="text-primary text-sm font-bold uppercase tracking-widest">LAYANAN KAMI</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-slate-800 leading-tight">
+        Layanan Medis & Perawatan Lengkap
+      </h2>
+    </div>
+
+    <!-- Carousel Container -->
+    <div 
+      id="service-carousel" 
+      class="flex overflow-x-auto snap-x snap-mandatory gap-6 scrollbar-hide pb-12 -mx-4 px-4 md:mx-0 md:px-0 "
+      style="scrollbar-width: none; -ms-overflow-style: none;"
+    >
+      {services.map((service) => (
+        <div class="min-w-[85%] md:min-w-[45%] lg:min-w-[31%] xl:min-w-[24%] snap-start group flex flex-col gap-6">
+          <div class="relative h-[500px] rounded-[2.5rem] overflow-hidden">
+            {/* Background Image with Zoom Effect */}
+            <div class="absolute inset-0 z-0">
+              <Image 
+                src={service.image} 
+                alt={service.title} 
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out"
+              />
+              {/* Premium Gradient Overlay */}
+              <div class="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-900/50 to-transparent z-10 transition-opacity duration-300 group-hover:opacity-90"></div>
+            </div>
+          </div>
+          <h3 class="text-2xl font-bold text-primary leading-tight text-center">{service.title}</h3>
+        </div>
+      ))}
+    </div>
+
+    <!-- Carousel Desktop Nav -->
+    <div class="hidden md:flex justify-center gap-4">
+      <button id="prev-service" class="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center text-white hover:border-primary hover:text-white/80 transition-all bg-primary shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+        <ChevronLeft size={24} />
+      </button>
+      <button id="next-service" class="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center text-white hover:border-primary hover:text-white/80 transition-all bg-primary shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+        <ChevronRight size={24} />
+      </button>
+    </div>
+
+    <!-- Mobile Indicator Dots -->
+    <div class="flex md:hidden justify-center gap-2 mt-4 text-primary">
+      {services.map((_, i) => (
+        <div class={`carousel-dot w-2 h-2 rounded-full transition-all duration-300 ${i === 0 ? 'bg-primary w-8' : 'bg-slate-300'}`} data-index={i}></div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+</style>
+
+<script>
+  const carousel = document.getElementById('service-carousel');
+  const prevBtn = document.getElementById('prev-service') as HTMLButtonElement;
+  const nextBtn = document.getElementById('next-service') as HTMLButtonElement;
+  const dots = document.querySelectorAll('.carousel-dot');
+
+  if (carousel && prevBtn && nextBtn) {
+    const scrollStep = () => {
+      const firstChild = carousel.firstElementChild as HTMLElement;
+      return firstChild ? firstChild.offsetWidth + 24 : 320; // 24 is gap-6
+    };
+
+    nextBtn.addEventListener('click', () => {
+      carousel.scrollBy({ left: scrollStep(), behavior: 'smooth' });
+    });
+
+    prevBtn.addEventListener('click', () => {
+      carousel.scrollBy({ left: -scrollStep(), behavior: 'smooth' });
+    });
+
+    carousel.addEventListener('scroll', () => {
+      const scrollLeft = carousel.scrollLeft;
+      const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+      
+      prevBtn.disabled = scrollLeft <= 10;
+      nextBtn.disabled = scrollLeft >= maxScroll - 10;
+
+      const scrollPercentage = scrollLeft / maxScroll;
+      const activeIndex = Math.round(scrollPercentage * (dots.length - 1));
+      
+      dots.forEach((dot, idx) => {
+        if (idx === activeIndex) {
+          dot.classList.add('bg-primary', 'w-8');
+          dot.classList.remove('bg-slate-300');
+        } else {
+          dot.classList.remove('bg-primary', 'w-8');
+          dot.classList.add('bg-slate-300');
+        }
+      });
+    });
+
+    prevBtn.disabled = true;
+  }
+</script>
