@@ -7,56 +7,107 @@ import type { Article } from '@/types/article';
 
 interface Props {
   article: Article;
+  variant?: 'default' | 'featured';
 }
 
-const { article } = Astro.props;
+const { article, variant = 'default' } = Astro.props;
 
 const thumbnailUrl = getThumbnailUrl(article.thumbnail);
-const summary = getSummary(article.content, 120);
+const summary = getSummary(article.content, variant === 'featured' ? 160 : 120);
 const slug = article.documentId;
 const formattedDate = formatDate(article.publishedAt || article.createdAt);
 ---
 
-<a
-  href={`/artikel/${slug}`}
-  class="group flex flex-row lg:flex-col gap-4 lg:gap-6 transition-all duration-300"
->
-  {/* Thumbnail with View Badge */}
-  <div class="relative w-32 h-32 md:w-40 md:h-40 lg:w-full lg:h-auto lg:aspect-video shrink-0 rounded-2xl overflow-hidden bg-slate-100 border border-slate-100 shadow-sm">
-    {thumbnailUrl ? (
-      <img
-        src={thumbnailUrl}
-        alt={article.title}
-        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-        loading="lazy"
-      />
-    ) : (
-      <div class="w-full h-full flex items-center justify-center bg-slate-50">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/><circle cx="9" cy="9" r="2"/>
-        </svg>
+{variant === 'default' ? (
+  <a
+    href={`/artikel/${slug}`}
+    class="group flex flex-row lg:flex-col gap-4 lg:gap-6 transition-all duration-300"
+  >
+    {/* Thumbnail with View Badge */}
+    <div class="relative w-32 h-32 md:w-40 md:h-40 lg:w-full lg:h-auto lg:aspect-video shrink-0 rounded-2xl overflow-hidden bg-slate-100 border border-slate-100 shadow-sm">
+      {thumbnailUrl ? (
+        <img
+          src={thumbnailUrl}
+          alt={article.title}
+          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          loading="lazy"
+        />
+      ) : (
+        <div class="w-full h-full flex items-center justify-center bg-slate-50">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/><circle cx="9" cy="9" r="2"/>
+          </svg>
+        </div>
+      )}
+      
+      {/* Views Badge */}
+      <div class="absolute top-2 right-2 flex items-center gap-1.5 px-2 py-1 rounded-md bg-yellow-400 text-white shadow-sm z-10 scale-90 md:scale-100">
+         <Eye size={14} />
+         <span class="text-xs font-bold leading-none">{article.viewed || 0}</span>
       </div>
-    )}
-    
-    {/* Views Badge */}
-    <div class="absolute top-2 right-2 flex items-center gap-1.5 px-2 py-1 rounded-lg bg-yellow-400 text-white shadow-sm z-10 scale-90 md:scale-100">
-       <Eye size={14} className="fill-white" />
-       <span class="text-xs font-bold leading-none">{article.viewed || 0}</span>
     </div>
-  </div>
 
-  {/* Content Section */}
-  <div class="flex flex-col flex-1 py-1 lg:py-0">
-    <h3 class="font-bold text-slate-800 text-base md:text-lg leading-snug group-hover:text-primary transition-colors line-clamp-2 lg:mb-2">
-      {article.title}
-    </h3>
-    
-    <time class="text-xs text-slate-400 font-medium mb-3 block">
-      {formattedDate}
-    </time>
-    
-    <p class="text-slate-500 text-sm leading-relaxed line-clamp-3 lg:line-clamp-2">
-      {summary}
-    </p>
-  </div>
-</a>
+    {/* Content Section */}
+    <div class="flex flex-col flex-1 py-1 lg:py-0">
+      <h3 class="font-bold text-slate-800 text-base md:text-lg leading-snug group-hover:text-primary transition-colors line-clamp-2 lg:mb-2">
+        {article.title}
+      </h3>
+      
+      <time class="text-xs text-slate-400 font-medium mb-3 block">
+        {formattedDate}
+      </time>
+      
+      <p class="text-slate-500 text-sm leading-relaxed line-clamp-3 lg:line-clamp-2">
+        {summary}
+      </p>
+    </div>
+  </a>
+) : (
+  <a
+    href={`/artikel/${slug}`}
+    class="group relative block w-full h-[350px] md:h-[450px] lg:h-full min-h-[400px] overflow-hidden rounded-2xl md:rounded-3xl shadow-lg transition-all duration-500"
+  >
+    {/* Background Image with Zoom */}
+    <div class="absolute inset-0 z-0">
+      {thumbnailUrl ? (
+        <img
+          src={thumbnailUrl}
+          alt={article.title}
+          class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+          loading="lazy"
+        />
+      ) : (
+        <div class="w-full h-full bg-slate-800 flex items-center justify-center">
+           <span class="text-slate-600 font-bold uppercase tracking-widest italic opacity-20 text-4xl">D'FREEZE</span>
+        </div>
+      )}
+      
+      {/* Advanced Gradient Overlay */}
+      <div class="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-900/40 to-transparent opacity-90 transition-opacity group-hover:opacity-95"></div>
+      <div class="absolute inset-0 bg-linear-to-r from-slate-950/40 to-transparent md:hidden"></div>
+    </div>
+
+    {/* Views Badge */}
+    <div class="absolute top-4 right-4 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-yellow-400 text-white shadow-xl z-10">
+       <Eye size={16} />
+       <span class="text-sm font-black leading-none">{article.viewed || 0}</span>
+    </div>
+
+    {/* Content Container */}
+    <div class="absolute inset-0 z-10 flex flex-col justify-end p-6 md:p-10 lg:p-12">
+      <div class="max-w-xl translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+        <time class="text-white/80 text-xs md:text-sm font-medium tracking-wide mb-3 block">
+          {formattedDate}
+        </time>
+        
+        <h3 class="text-2xl font-black text-white leading-tight tracking-tight uppercase mb-4 drop-shadow-md group-hover:text-primary transition-colors">
+          {article.title}
+        </h3>
+        
+        <p class="text-slate-200 text-sm md:text-base leading-relaxed line-clamp-2 md:line-clamp-3 font-medium opacity-90 shadow-black drop-shadow-sm">
+          {summary}
+        </p>
+      </div>
+    </div>
+  </a>
+)}

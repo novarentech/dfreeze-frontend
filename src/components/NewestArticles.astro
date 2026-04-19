@@ -1,0 +1,91 @@
+---
+import { getArticles } from '@/lib/api/articles';
+import ArticleCard from '@/components/ArticleCard.astro';
+import type { Article } from '@/types/article';
+
+interface Props {
+  title?: string;
+  pageSize?: number;
+}
+
+const { 
+  title = "Artikel Terbaru", 
+  pageSize = 7,
+} = Astro.props;
+
+// state
+let articles: Article[] = [];
+let fetchError = false;
+
+try {
+  const res = await getArticles({ 
+    pageSize,
+    sort: 'createdAt:desc'
+  });
+
+  articles = res || [];
+} catch (err) {
+  console.error("Fetch articles error:", err);
+  fetchError = true;
+}
+---
+
+<section class="py-20 border-t border-slate-100">
+  <div class="mb-12">
+    <h2 class="text-3xl font-extrabold text-slate-800 tracking-tight">
+      {title}
+    </h2>
+  </div>
+
+  {/* ERROR STATE */}
+  {fetchError && (
+    <div class="rounded-2xl bg-amber-50 border border-amber-200 p-6 flex items-start gap-4 mb-10">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="#d97706" stroke-width="2">
+        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+        <path d="M12 9v4"/>
+        <path d="M12 17h.01"/>
+      </svg>
+      <div>
+        <p class="font-semibold text-amber-800">Tidak dapat memuat artikel</p>
+        <p class="text-sm text-amber-700 mt-1">
+          Layanan artikel sedang tidak tersedia. Silakan coba lagi nanti.
+        </p>
+      </div>
+    </div>
+  )}
+
+  {/* EMPTY STATE */}
+  {articles.length === 0 && !fetchError && (
+    <div class="text-center py-20">
+      <div class="w-20 h-20 mx-auto rounded-full bg-slate-100 flex items-center justify-center mb-5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none" stroke="#94a3b8" stroke-width="1.5">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" x2="8" y1="13" y2="13"/>
+          <line x1="16" x2="8" y1="17" y2="17"/>
+        </svg>
+      </div>
+      <h3 class="text-xl font-semibold text-slate-700">Belum ada artikel</h3>
+      <p class="text-slate-400 mt-2">
+        Artikel terbaru akan segera kami hadirkan. Pantau terus!
+      </p>
+    </div>
+  )}
+
+  {/* LIST */}
+  {articles.length > 0 && (
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+      <div class="hidden sm:block sm:col-span-2 lg:col-span-2">
+        <ArticleCard article={articles[0]} variant="featured" />
+      </div>
+      <div class="block sm:hidden">
+        <ArticleCard article={articles[0]} />
+      </div>
+
+      {/* Other Articles */}
+      {articles.slice(1).map((article: Article) => (
+        <ArticleCard article={article} />
+      ))}
+    </div>
+  )}
+</section>

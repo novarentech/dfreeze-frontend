@@ -25,7 +25,6 @@ try {
   paginatedData = await getPaginatedArticles({ 
     page: currentPage, 
     pageSize: pageSize,
-    sort: 'publishedAt:desc'
   });
 } catch (err) {
   console.error("Fetch articles error:", err);

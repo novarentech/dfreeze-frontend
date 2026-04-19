@@ -4,11 +4,12 @@ import { getThumbnailUrl } from "@/lib/utils/media";
 import { getSummary } from "@/lib/utils/content";
 import { formatDate } from "@/lib/utils/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { Article } from "@/types/article";
 
 /**
  * Fetch 5 most popular articles based on view count
  */
-const articles = await getArticles({ pageSize: 5, sort: 'viewed:desc' });
+const articles: Article[] = await getArticles({ pageSize: 5, sort: 'viewed:desc' });
 ---
 
 <section id="popular-articles" class="relative overflow-hidden">
@@ -26,7 +27,7 @@ const articles = await getArticles({ pageSize: 5, sort: 'viewed:desc' });
         class="flex overflow-hidden rounded-3xl bg-slate-900 border border-slate-100"
       >
         <div id="popular-track" class="flex transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] w-full">
-          {articles.map((article) => {
+          {articles.map((article: Article) => {
             const thumbnailUrl = getThumbnailUrl(article.thumbnail);
             
             return (

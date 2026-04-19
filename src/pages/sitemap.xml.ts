@@ -1,8 +1,9 @@
 import type { APIRoute } from 'astro';
 import { getArticles } from '../lib/api/articles';
+import type { Article } from '../types/article';
 
 export const GET: APIRoute = async ({ site }) => {
-  const articles = await getArticles();
+  const articles: Article[] = await getArticles();
   
   // Ambil URL utama dari asto.config.mjs
   const siteUrl = site ? new URL(site).origin : 'https://dfreeze.novarentech.com';
