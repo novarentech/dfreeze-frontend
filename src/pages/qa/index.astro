@@ -2,17 +2,20 @@
 export const prerender = false;
 
 import MainLayout from '@/layouts/MainLayout.astro';
+import QAContainer from '@/components/qa/QAContainer';
+import AskQuestionModal from '@/components/AskQuestionModal';
+import { Image } from 'astro:assets';
+import askQuestionImg from '@/assets/image/ask-question.png';
 
 ---
 
 <MainLayout
-  title="Artikel Kesehatan"
-  description="Baca artikel dan tips kesehatan hewan peliharaan dari dokter hewan berpengalaman DFreeze Vet Clinic."
+  title="Tanya Jawab (Q&A)"
+  description="Temukan jawaban atas berbagai pertanyaan seputar kesehatan hewan peliharaan di DFreeze Vet Clinic."
 >
-  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-  <!-- Header -->
-  <section class="py-14 border-b border-slate-100">
-    <div class="">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-20 lg:py-24">
+    <!-- Page Header (Optional, if we want more context) -->
+    <div class="mb-10">
       <span class="text-primary text-sm font-semibold uppercase tracking-widest">Q&A</span>
       <h1 class="mt-3 text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight">
         Punya <span class="text-primary">pertanyaan</span> seputar hewan peliharaan Anda? 
@@ -21,6 +24,37 @@ import MainLayout from '@/layouts/MainLayout.astro';
         Tanyakan apa saja seputar kesehatan dan perawatan di sini
       </p>
     </div>
-  </section>
+
+    {/* Layout Grid */}
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12 lg:gap-24 items-start">
+      
+      <!-- Main Content Area -->
+      <section class="order-1">
+        <QAContainer client:load />
+      </section>
+
+      <!-- Sidebar CTA -->
+      <aside class="order-2 lg:top-32 h-fit text-center">
+        <h2 class="font-extrabold text-primary text-xl leading-tight mb-4">
+          Tidak Menemukan Jawaban?
+        </h2>
+        <p class="text-slate-600 leading-relaxed text-sm px-2">
+          Ajukan pertanyaan Anda dan kami akan menjawabnya
+        </p>
+        <div class="relative group p-4 flex justify-center lg:justify-start">
+          <Image
+            src={askQuestionImg}
+            alt="Ask Question"
+            width={500}
+            height={500}
+            class="w-full max-w-max-[300px] lg:max-w-none h-auto object-cover scale-90 group-hover:scale-95 transition-transform duration-500 ease-out"
+          />
+        </div>
+        <div class="flex justify-center">
+            <AskQuestionModal client:load />
+        </div>
+      </aside>
+
+    </div>
   </div>
 </MainLayout>
