@@ -40,9 +40,12 @@ const services = [
     image: dentalImg,
   }
 ];
+
+const { id = "services" } = Astro.props;
 ---
 
-<section id="layanan" class="py-24 relative overflow-hidden">
+<section id={id} class="py-24 relative overflow-hidden">
+
   <div class="container mx-auto px-4 relative">
     <div class="mb-16 md:text-center text-left">
       <p class="text-primary text-sm font-bold uppercase tracking-widest">LAYANAN KAMI</p>

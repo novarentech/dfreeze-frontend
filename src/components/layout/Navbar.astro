@@ -7,11 +7,12 @@ const pathname = Astro.url.pathname;
 
 const navLinks = [
   { href: '/',            label: 'Beranda',     active: pathname === '/' },
-  { href: '/tentang',     label: 'Tentang Kami', active: pathname.startsWith('/tentang') },
-  { href: '/layanan',     label: 'Layanan',     active: pathname.startsWith('/layanan') },
+  { href: '/#about',      label: 'Tentang Kami', active: false },
+  { href: '/#services',   label: 'Layanan',     active: false },
   { href: '/artikel',     label: 'Artikel',     active: pathname.startsWith('/artikel') },
-  { href: '/qa',          label: 'Q&A',         active: pathname.startsWith('/qa') },
+  { href: '/faq',         label: 'Q&A',         active: pathname.startsWith('/faq') },
 ];
+
 ---
 
 <header class="fixed top-0 z-40 w-full shadow-sm mx-auto bg-white">
@@ -38,22 +39,26 @@ const navLinks = [
           {navLinks.map((link) => (
             <a
               href={link.href}
-              class={`px-3 py-1 text-sm font-medium transition-colors border-b-2 ${
+              data-nav-link={link.href}
+              class={`nav-link relative px-3 py-1 text-sm font-medium transition-all ${
                 link.active
-                  ? 'border-primary text-primary font-semibold'
-                  : 'border-transparent hover:text-primary hover:border-primary/40'
+                  ? 'text-primary font-semibold is-active'
+                  : 'text-slate-600 hover:text-primary transition-colors'
               }`}
             >
               {link.label}
+              <span class="underline-glow absolute bottom-0 left-0 w-full h-[2px] bg-primary scale-x-0 origin-center transition-transform duration-300 ease-out"></span>
+
             </a>
           ))}
         </nav>
+
 
         <!-- CTA + Mobile Toggle -->
         <div class="flex items-center gap-2">
           <!-- Hubungi Kami Button -->
           <a
-            href="/kontak"
+            href="https://wa.me/628112609091"
             id="nav-cta"
             class="hidden md:inline-flex items-center px-5 py-2 rounded-full bg-[#F5BC2B] hover:bg-[#e6ad20] text-sm font-semibold transition-all shadow-sm hover:shadow-md"
           >
@@ -71,10 +76,11 @@ const navLinks = [
             {navLinks.map((link) => (
                 <a
                     href={link.href}
-                    class={`block px-3 py-2.5 text-sm font-medium rounded-lg mb-0.5 transition-colors ${
+                    data-nav-link={link.href}
+                    class={`mobile-nav-link block px-3 py-2.5 text-sm font-medium rounded-lg mb-0.5 transition-colors ${
                     link.active
                         ? 'bg-teal-50 border-primary text-primary font-semibold'
-                        : 'hover:text-primary hover:bg-teal-50'
+                        : 'text-slate-600 hover:text-primary hover:bg-teal-50'
                     }`}
                 >
                     {link.label}
@@ -86,7 +92,121 @@ const navLinks = [
             >
             Hubungi Kami
             </a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </header>
+
+<script>
+  function setupActiveNav() {
+    const navLinks = document.querySelectorAll('[data-nav-link]');
+    const sections = document.querySelectorAll('#hero, #about, #services, #fasilitas, #testimoni, #galeri, #cta, #lokasi');
+    const isHomePage = window.location.pathname === '/';
+
+    if (!isHomePage) return;
+
+    const observerOptions = {
+      root: null,
+      rootMargin: '-20% 0px -70% 0px',
+      threshold: 0
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      let activeSectionId = null;
+
+      // Find the currently intersecting section
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          activeSectionId = entry.target.getAttribute('id');
+        }
+      });
+
+      if (activeSectionId === 'about') {
+        updateActiveLink('/#about');
+      } else if (activeSectionId === 'services') {
+        updateActiveLink('/#services');
+      } else if (activeSectionId) {
+        updateActiveLink('/');
+      }
+    }, observerOptions);
+
+
+    sections.forEach((section) => observer.observe(section));
+
+    // Handle scroll to top specifically for Beranda
+    let scrollTimeout: any;
+    window.addEventListener('scroll', () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        const anySectionActive = Array.from(sections).some(section => {
+          const rect = section.getBoundingClientRect();
+          return rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2;
+        });
+
+        if (!anySectionActive && window.location.pathname === '/') {
+          updateActiveLink('/');
+        }
+      }, 100);
+    });
+
+
+    function updateActiveLink(href: string) {
+      navLinks.forEach((link) => {
+        const linkHref = link.getAttribute('href');
+        const isActive = linkHref === href;
+        
+        // Desktop Classes
+        if (link.classList.contains('nav-link')) {
+          const glow = link.querySelector('.underline-glow');
+          if (isActive) {
+            link.classList.add('text-primary', 'font-semibold', 'is-active');
+            link.classList.remove('text-slate-600');
+            if (glow) glow.classList.replace('scale-x-0', 'scale-x-100');
+          } else {
+            link.classList.remove('text-primary', 'font-semibold', 'is-active');
+            link.classList.add('text-slate-600');
+            if (glow) glow.classList.replace('scale-x-100', 'scale-x-0');
+          }
+        }
+
+
+
+        // Mobile Classes
+        if (link.classList.contains('mobile-nav-link')) {
+          if (isActive) {
+            link.classList.add('bg-teal-50', 'text-primary', 'font-semibold');
+            link.classList.remove('text-slate-600');
+          } else {
+            link.classList.remove('bg-teal-50', 'text-primary', 'font-semibold');
+            link.classList.add('text-slate-600');
+          }
+        }
+      });
+    }
+  }
+
+  // Initial setup
+  setupActiveNav();
+
+  // Re-run on View Transitions (if enabled)
+  document.addEventListener('astro:after-swap', setupActiveNav);
+</script>
+
+<style>
+  /* Desktop Hover Effect */
+  .nav-link:hover .underline-glow {
+    transform: scaleX(1) !important;
+  }
+  
+  .nav-link.is-active .underline-glow {
+    transform: scaleX(1) !important;
+  }
+
+  .underline-glow {
+    transform-origin: center !important;
+  }
+</style>
+
+

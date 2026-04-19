@@ -43,28 +43,41 @@ const localBusinessSchema = {
   jsonld={localBusinessSchema}
 >
   <!-- Hero Section -->
-  <Hero />
+  <div id="hero">
+    <Hero />
+  </div>
 
   <!-- Tentang Kami -->
-  <AboutUs />
+  <AboutUs id="about"/>
 
   <!-- Layanan Section -->
-  <Services />
+  <Services id="services"/>
   
   <!-- Fasilitas Section -->
-  <Facilities />
+  <div id="fasilitas">
+    <Facilities />
+  </div>
 
   <!-- Testimonials Section -->
-  <Testimonials />
+  <div id="testimoni">
+    <Testimonials />
+  </div>
 
   <!-- Galeri Section -->
-  <Gallery />
+  <div id="galeri">
+    <Gallery />
+  </div>
 
   <!-- Why Us Section -->
-  <CTA />
+  <div id="cta">
+    <CTA />
+  </div>
 
     <!-- Lokasi Section -->
-  <Location />
+  <div id="lokasi">
+    <Location />
+  </div>
+
 
   <FloatingEmergencyButton client:load />
 </MainLayout>
