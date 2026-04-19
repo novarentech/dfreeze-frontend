@@ -1,11 +1,10 @@
 import type { APIContext } from 'astro';
 import { ENV_SERVER } from '@/config/env.server';
-import { bookingSchema } from '@/types/booking';
+import { questionSubmissionSchema } from '@/types/question_submission';
 
 export const prerender = false;
 
-// --- 2. In-Memory Rate Limiter ---
-// Menyimpan riwayat akses IP dengan jumlah hit & reset time
+// --- 1. In-Memory Rate Limiter ---
 interface RateLimitInfo {
   count: number;
   resetTime: number;
@@ -19,34 +18,29 @@ function checkRateLimit(ip: string): boolean {
   const now = Date.now();
   const clientInfo = rateLimitCache.get(ip);
 
-  // Jika belum ada/sudah kadaluarsa, reset & perbolehkan
   if (!clientInfo || now > clientInfo.resetTime) {
     rateLimitCache.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS });
     return true;
   }
 
-  // Jika kuota habis, tolak
   if (clientInfo.count >= RATE_LIMIT_MAX_REQUESTS) {
     return false;
   }
 
-  // Kuota masih ada, inkremen & perbolehkan
   clientInfo.count += 1;
   return true;
 }
 
-// --- 3. API Handler ---
+// --- 2. API Handler ---
 export async function POST({ request, clientAddress }: APIContext) {
   try {
-    // Implementasi Rate Limiter
-    // Deteksi IP berdasarkan cloud proxy atau native astro address
     const ip = request.headers.get("x-forwarded-for") || clientAddress || "unknown_ip";
     
     if (!checkRateLimit(ip)) {
       return new Response(
         JSON.stringify({ 
           success: false, 
-          message: "Anda terlalu sering melakukan request (Rate Limit Exceeded). Harap tunggu 1 menit." 
+          message: "Anda terlalu sering mengirim pertanyaan. Harap tunggu 1 menit." 
         }),
         { status: 429, headers: { "Content-Type": "application/json" } }
       );
@@ -54,8 +48,8 @@ export async function POST({ request, clientAddress }: APIContext) {
 
     const body = await request.json();
 
-    // Implementasi Zod Parser
-    const validatedData = bookingSchema.safeParse(body);
+    // Validation
+    const validatedData = questionSubmissionSchema.safeParse(body);
 
     if (!validatedData.success) {
       const errorMsg = validatedData.error.issues.map((e) => e.message).join(", ");
@@ -65,7 +59,6 @@ export async function POST({ request, clientAddress }: APIContext) {
       );
     }
 
-    // Menggunakan variabel global (ENV_SERVER) agar tidak membaca RAW config
     const { API_BACKEND_URL: apiUrl, API_SECRET_KEY: apiKey } = ENV_SERVER;
 
     if (!apiUrl) {
@@ -78,8 +71,8 @@ export async function POST({ request, clientAddress }: APIContext) {
       );
     }
 
-    // Teruskan ke server eksternal (Strapi API)
-    const backendRes = await fetch(`${apiUrl}/bookings`, {
+    // Forward to Strapi
+    const backendRes = await fetch(`${apiUrl}/questions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -90,18 +83,17 @@ export async function POST({ request, clientAddress }: APIContext) {
 
     if (backendRes.ok) {
       return new Response(
-        JSON.stringify({ success: true, message: "Booking berhasil dikirim." }),
+        JSON.stringify({ success: true, message: "Pertanyaan berhasil dikirim." }),
         { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
 
-    // Tangani respons valid tapi statusnya error dari Strapi
     let errorMsg = "Terjadi kesalahan respon dari eksternal sistem.";
     try {
       const errorData = await backendRes.json();
       errorMsg = errorData.error?.message || errorData.message || errorMsg;
     } catch {
-      // Abaikan jika tidak reformat JSON
+      // ignore
     }
 
     return new Response(JSON.stringify({ success: false, message: errorMsg }), {
@@ -110,7 +102,7 @@ export async function POST({ request, clientAddress }: APIContext) {
     });
 
   } catch (error) {
-    console.error("Booking API Error:", error);
+    console.error("Questions API Error:", error);
     return new Response(
       JSON.stringify({ success: false, message: "Gagal memproses permintaan (Server Crash)." }),
       { status: 500, headers: { "Content-Type": "application/json" } },

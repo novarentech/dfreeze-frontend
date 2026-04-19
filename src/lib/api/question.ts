@@ -1,6 +1,8 @@
 import { ENV_SERVER } from "@/config/env.server";
 import { getCache, setCache } from "@/lib/cache";
 import type { Question } from "@/types/question";
+import type { QuestionSubmissionValues } from "@/types/question_submission";
+
 
 const CACHE_TTL = 60 * 1000; // 1 min
 
@@ -54,3 +56,25 @@ export async function getQuestions(options: GetQuestionsOptions = {}): Promise<Q
     return [];
   }
 }
+
+/**
+ * Submit a new question to the internal API endpoint
+ */
+export async function createQuestion(data: QuestionSubmissionValues) {
+  const res = await fetch("/api/questions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ data }),
+  });
+
+  const responseData = await res.json();
+
+  if (!res.ok) {
+    throw new Error(responseData.message || "Gagal mengirim pertanyaan");
+  }
+
+  return responseData;
+}
+

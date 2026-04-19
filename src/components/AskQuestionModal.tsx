@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { HelpCircle, Send } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { HelpCircle } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -13,6 +14,8 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { toast } from "sonner";
+import { createQuestion } from "@/lib/api/question";
+import type { QuestionSubmissionValues } from "@/types/question_submission";
 
 export default function AskQuestionModal({
   variant = "default",
@@ -22,34 +25,39 @@ export default function AskQuestionModal({
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [form, setForm] = useState({
-    name: "",
-    contact: "",
-    message: "",
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<QuestionSubmissionValues>({
+    defaultValues: {
+      name: "",
+      phone: "",
+      question: "",
+    },
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: QuestionSubmissionValues) => {
     setIsLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      console.log("Question Submitted:", form);
+    try {
+      await createQuestion(data);
+      
       toast.success("Pertanyaan Terkirim!", {
-        description:
-          "Tim medis kami akan segera menghubungi Anda melalui kontak yang diberikan.",
+        description: "Tim medis kami akan segera menghubungi Anda melalui kontak yang diberikan.",
         position: "top-right",
       });
-      setIsLoading(false);
+      
+      reset();
       setIsOpen(false);
-      setForm({ name: "", contact: "", message: "" });
-    }, 1000);
+    } catch (error: any) {
+      toast.error("Gagal mengirim pertanyaan", {
+        description: error.message || "Terjadi kesalahan. Silakan coba lagi.",
+        position: "top-right",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -87,7 +95,7 @@ export default function AskQuestionModal({
             </DialogDescription>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name" className="text-slate-700 font-bold">
@@ -95,41 +103,55 @@ export default function AskQuestionModal({
                 </Label>
                 <Input
                   id="name"
-                  name="name"
                   placeholder="Masukkan Nama Lengkap"
-                  value={form.name}
-                  onChange={handleChange}
+                  className={errors.name ? "border-red-500" : ""}
+                  {...register("name", { 
+                    required: "Nama wajib diisi",
+                    minLength: { value: 2, message: "Nama minimal 2 karakter" }
+                  })}
                   required
                 />
+                {errors.name && (
+                  <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="contact" className="text-slate-700 font-bold">
-                  WhatsApp / Email <span className="text-red-500">*</span>
+                <Label htmlFor="phone" className="text-slate-700 font-bold">
+                  No. WhatsApp <span className="text-red-500">*</span>
                 </Label>
                 <Input
-                  id="contact"
-                  name="contact"
-                  placeholder="08XXXXXXXXXX atau email@anda.com"
-                  value={form.contact}
-                  onChange={handleChange}
+                  id="phone"
+                  placeholder="08XXXXXXXXXX"
+                  className={errors.phone ? "border-red-500" : ""}
+                  {...register("phone", { 
+                    required: "Nomor WhatsApp wajib diisi",
+                    minLength: { value: 10, message: "Nomor minimal 10 digit" }
+                  })}
                   required
                 />
+                {errors.phone && (
+                  <p className="text-xs text-red-500 mt-1">{errors.phone.message}</p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="message" className="text-slate-700 font-bold">
+                <Label htmlFor="question" className="text-slate-700 font-bold">
                   Pertanyaan Anda <span className="text-red-500">*</span>
                 </Label>
                 <Textarea
-                  id="message"
-                  name="message"
+                  id="question"
                   placeholder="Jelaskan pertanyaan atau konsultasi Anda di sini..."
-                  value={form.message}
-                  onChange={handleChange}
-                  className="min-h-[140px]"
+                  className={`min-h-[140px] ${errors.question ? "border-red-500" : ""}`}
+                  {...register("question", { 
+                    required: "Pertanyaan wajib diisi",
+                    minLength: { value: 5, message: "Pertanyaan minimal 5 karakter" }
+                  })}
                   required
                 />
+                {errors.question && (
+                  <p className="text-xs text-red-500 mt-1">{errors.question.message}</p>
+                )}
               </div>
             </div>
 
@@ -139,13 +161,7 @@ export default function AskQuestionModal({
                 disabled={isLoading}
                 className="w-full bg-primary hover:bg-primary/90 text-white font-semibold h-12 flex gap-2"
               >
-                {isLoading ? (
-                  "Mengirim..."
-                ) : (
-                  <>
-                    <span>Kirim Pertanyaan</span>
-                  </>
-                )}
+                {isLoading ? "Mengirim..." : "Kirim Pertanyaan"}
               </Button>
             </DialogFooter>
           </form>
