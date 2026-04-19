@@ -6,12 +6,48 @@ import QAContainer from '@/components/qa/QAContainer';
 import AskQuestionModal from '@/components/AskQuestionModal';
 import { Image } from 'astro:assets';
 import askQuestionImg from '../../assets/image/ask-question.png';
+import { ENV_SERVER } from '@/config/env.server';
+import type { QuestionsResponse } from '@/types/question';
 
+// Fetch initial questions for FAQ Schema
+let questions = [];
+try {
+  const params = new URLSearchParams();
+  params.append("pagination[pageSize]", "100"); // Get enough for schema
+  params.append("sort", "createdAt:desc");
+  
+  const res = await fetch(`${ENV_SERVER.API_BACKEND_URL}/questions?${params.toString()}`, {
+    headers: {
+      Authorization: `Bearer ${ENV_SERVER.API_SECRET_KEY}`,
+    },
+  });
+  
+  if (res.ok) {
+    const json: QuestionsResponse = await res.json();
+    questions = json.data.filter(q => q.answer); // Only those with answers
+  }
+} catch (error) {
+  console.error("Error fetching questions for schema:", error);
+}
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": questions.map(q => ({
+    "@type": "Question",
+    "name": q.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": q.answer
+    }
+  }))
+};
 ---
 
 <MainLayout
   title="Tanya Jawab (Q&A)"
   description="Temukan jawaban atas berbagai pertanyaan seputar kesehatan hewan peliharaan di DFreeze Vet Clinic."
+  jsonld={faqSchema}
 >
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-20 lg:py-24">
     <!-- Page Header (Optional, if we want more context) -->

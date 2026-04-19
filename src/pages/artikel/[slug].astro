@@ -53,6 +53,31 @@ const articleSchema = {
       "url": "https://dfreeze.novarentech.com"
   }]
 };
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Beranda",
+      "item": "https://dfreeze.novarentech.com"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Artikel",
+      "item": "https://dfreeze.novarentech.com/artikel"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": article.title,
+      "item": `https://dfreeze.novarentech.com/artikel/${slug}`
+    }
+  ]
+};
 ---
 
 <MainLayout
@@ -60,7 +85,7 @@ const articleSchema = {
   description={article.title ?? 'Baca artikel kesehatan hewan peliharaan di DFreeze Vet Clinic.'}
   image={thumbnailUrl}
   type="article"
-  jsonld={articleSchema}
+  jsonld={[articleSchema, breadcrumbSchema]}
 >
   <div class="container mx-auto px-4 sm:px-6 lg:px-8">
     <div class="mt-4 pt-8 border-t border-slate-100 flex items-center justify-between">
