@@ -5,6 +5,8 @@ import shieldIcon from "./shield.svg?url";
 import thumbUpIcon from "./thumb-up.svg?url";
 import facebookIcon from "./facebook.svg?url";
 import mapsIcon from "./maps.svg?url";
+import whatsappIcon from "./whatsapp.svg?url";
+import bellIcon from "./bell.svg?url";
 
 export {
   loveIcon,
@@ -13,5 +15,7 @@ export {
   shieldIcon,
   thumbUpIcon,
   facebookIcon,
-  mapsIcon
+  mapsIcon,
+  whatsappIcon,
+  bellIcon
 };
