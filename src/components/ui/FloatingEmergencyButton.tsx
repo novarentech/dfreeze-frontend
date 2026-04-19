@@ -4,7 +4,7 @@ import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { whatsappIcon, bellIcon } from "@/assets/icons";
 
 const WHATSAPP_URL = "https://wa.me/628112609091";
-const MAPS_URL = "https://www.google.com/maps/search/Klinik+Hewan+D'FREEZE+Ngemplak+Sleman";
+const MAPS_URL = "https://maps.app.goo.gl/sGPvWD75t7YUDiGS6";
 
 export default function FloatingEmergencyButton() {
   const [isOpen, setIsOpen] = useState(false);
