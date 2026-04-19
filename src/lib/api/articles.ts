@@ -4,9 +4,24 @@ import type { Article } from "@/types/article";
 
 const CACHE_TTL = 60 * 1000; // 1 menit
 
-async function fetchArticlesFromAPI(): Promise<Article[]> {
+export interface GetArticlesOptions {
+  pageSize?: number;
+  page?: number;
+  sort?: string;
+}
+
+async function fetchArticlesFromAPI(options: GetArticlesOptions = {}): Promise<Article[]> {
+  const { pageSize, page, sort } = options;
+  
+  const params = new URLSearchParams();
+  params.append("populate", "thumbnail");
+
+  if (pageSize) params.append("pagination[pageSize]", pageSize.toString());
+  if (page) params.append("pagination[page]", page.toString());
+  if (sort) params.append("sort", sort);
+
   const res = await fetch(
-    `${ENV_SERVER.API_BACKEND_URL}/articles?populate=thumbnail`,
+    `${ENV_SERVER.API_BACKEND_URL}/articles?${params.toString()}`,
     {
       headers: {
         Authorization: `Bearer ${ENV_SERVER.API_SECRET_KEY}`,
@@ -22,14 +37,14 @@ async function fetchArticlesFromAPI(): Promise<Article[]> {
   return Array.isArray(json.data) ? json.data : [];
 }
 
-export async function getArticles(): Promise<Article[]> {
-  const cacheKey = "articles";
+export async function getArticles(options: GetArticlesOptions = {}): Promise<Article[]> {
+  const cacheKey = `articles-${JSON.stringify(options)}`;
 
   const cached = getCache<Article[]>(cacheKey);
   if (cached) return cached;
 
   try {
-    const data = await fetchArticlesFromAPI();
+    const data = await fetchArticlesFromAPI(options);
     setCache(cacheKey, data, CACHE_TTL);
     return data;
   } catch (err) {

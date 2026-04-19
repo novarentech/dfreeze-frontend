@@ -1,0 +1,233 @@
+---
+import { getArticles } from "@/lib/api/articles";
+import { getThumbnailUrl } from "@/lib/utils/media";
+import { getSummary } from "@/lib/utils/content";
+import { formatDate } from "@/lib/utils/utils";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+/**
+ * Fetch 5 most popular articles based on view count
+ */
+const articles = await getArticles({ pageSize: 5, sort: 'viewed:desc' });
+---
+
+<section id="popular-articles" class="relative overflow-hidden">
+  <div class="container mx-auto">
+    <div class="mb-10 text-left">
+      <h2 class="text-3xl font-extrabold text-slate-800 leading-tight">
+        Artikel Populer
+      </h2>
+    </div>
+
+    <!-- Carousel Container -->
+    <div class="relative group mx-auto">
+      <div 
+        id="popular-carousel" 
+        class="flex overflow-hidden rounded-3xl bg-slate-900 border border-slate-100"
+      >
+        <div id="popular-track" class="flex transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] w-full">
+          {articles.map((article) => {
+            const thumbnailUrl = getThumbnailUrl(article.thumbnail);
+            
+            return (
+              <a 
+                href={`/artikel/${article.documentId}`} 
+                class="min-w-full relative h-[450px] md:h-[600px] lg:h-[650px]  overflow-hidden flex flex-col justify-end group/card shadow-inner"
+              >
+                {/* Background Image with Zoom and Blur */}
+                <div class="absolute inset-0 z-0">
+                  {thumbnailUrl ? (
+                    <img 
+                      src={thumbnailUrl} 
+                      alt={article.title} 
+                      class="w-full h-full object-cover transition-transform duration-1000 group-hover/card:scale-105"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div class="w-full h-full bg-slate-800 flex items-center justify-center">
+                       <span class="text-slate-600 font-bold uppercase tracking-widest italic opacity-20 text-4xl">D'FREEZE</span>
+                    </div>
+                  )}
+                  {/* Master Overlay Gradient (matching the darkened aesthetic) */}
+                  <div class="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-900/40 to-transparent opacity-90 transition-opacity group-hover/card:opacity-95"></div>
+                </div>
+
+                {/* Content Overlay */}
+                <div class="relative z-10 px-8 pb-12 md:px-16 md:pb-20 lg:px-28 lg:pb-32 max-w-5xl">
+                   <div class="space-y-3 animate-in slide-in-from-bottom-10 duration-700">
+                     <p class="text-white text-sm tracking-widest uppercase opacity-80">
+                       {formatDate(article.publishedAt || article.createdAt)}
+                     </p>
+                     
+                     <h3 class="text-3xl font-black text-white leading-[1.1] tracking-tight uppercase max-w-4xl drop-shadow-md group-hover/card:text-primary transition-colors">
+                       {article.title}
+                     </h3>
+                     
+                     <p class="text-slate-200 text-base md:text-xl leading-relaxed line-clamp-2 md:line-clamp-3 max-w-3xl font-medium opacity-90 drop-shadow-sm">
+                       {getSummary(article.content, 160)}
+                     </p>
+                   </div>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+
+      <!-- Static Navigation Overlays -->
+      <div class="hidden md:flex absolute inset-y-0 left-4 lg:left-8 items-center z-20 pointer-events-none">
+        <button 
+          id="pop-prev" 
+          class="pointer-events-auto w-14 h-14 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center text-white hover:bg-white/25 hover:scale-110 transition-all shadow-2xl active:scale-95 group/arrow disabled:opacity-30 disabled:backdrop-blur-none"
+        >
+          <ChevronLeft size={28} className="group-hover/arrow:-translate-x-1 transition-transform" />
+        </button>
+      </div>
+      
+      <div class="hidden md:flex absolute inset-y-0 right-4 lg:right-8 items-center z-20 pointer-events-none">
+        <button 
+          id="pop-next" 
+          class="pointer-events-auto w-14 h-14 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center text-white hover:bg-white/25 hover:scale-110 transition-all shadow-2xl active:scale-95 group/arrow disabled:opacity-30 disabled:backdrop-blur-none"
+        >
+          <ChevronRight size={28} className="group-hover/arrow:translate-x-1 transition-transform" />
+        </button>
+      </div>
+
+      <!-- Desktop/Mobile Indicator Dots -->
+      <div class="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-30">
+        {articles.map((_, i) => (
+          <button 
+            class={`pop-dot h-1.5 md:h-2 rounded-full transition-all duration-500 shadow-sm ${i === 0 ? 'bg-white w-8 md:w-12' : 'bg-white/30 w-1.5 md:w-2'}`}
+            data-index={i}
+            aria-label={`Go to slide ${i + 1}`}
+          ></button>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const track = document.getElementById('popular-track');
+  const dots = document.querySelectorAll('.pop-dot');
+  const prevBtn = document.getElementById('pop-prev') as HTMLButtonElement;
+  const nextBtn = document.getElementById('pop-next') as HTMLButtonElement;
+  
+  let currentIndex = 0;
+  const totalSlides = dots.length;
+
+  if (track && totalSlides > 0) {
+    const updateUI = () => {
+      // Move track
+      track.style.transform = `translateX(-${currentIndex * 100}%)`;
+      
+      // Update dots
+      dots.forEach((dot, idx) => {
+        if (idx === currentIndex) {
+          dot.classList.add('bg-white', 'w-8', 'md:w-12');
+          dot.classList.remove('bg-white/30', 'w-3', 'md:w-4');
+        } else {
+          dot.classList.remove('bg-white', 'w-8', 'md:w-12');
+          dot.classList.add('bg-white/30', 'w-3', 'md:w-4');
+        }
+      });
+
+      // Update buttons
+      if (prevBtn) prevBtn.disabled = currentIndex === 0;
+      if (nextBtn) nextBtn.disabled = currentIndex === totalSlides - 1;
+    };
+
+    // Initial state
+    updateUI();
+
+    // Event Listeners
+    nextBtn?.addEventListener('click', () => {
+      if (currentIndex < totalSlides - 1) {
+        currentIndex++;
+        updateUI();
+      }
+    });
+
+    prevBtn?.addEventListener('click', () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateUI();
+      }
+    });
+
+    // Dot navigation
+    dots.forEach((dot, idx) => {
+      dot.addEventListener('click', () => {
+        currentIndex = idx;
+        updateUI();
+      });
+    });
+
+    // Optional: Auto-play every 7 seconds
+    let autoplayInterval = setInterval(() => {
+      if (currentIndex < totalSlides - 1) {
+        currentIndex++;
+      } else {
+        currentIndex = 0;
+      }
+      updateUI();
+    }, 7000);
+
+    // Pause on user interaction
+    const resetAutoplay = () => {
+      clearInterval(autoplayInterval);
+      autoplayInterval = setInterval(() => {
+        if (currentIndex < totalSlides - 1) {
+          currentIndex++;
+        } else {
+          currentIndex = 0;
+        }
+        updateUI();
+      }, 7000);
+    };
+
+    [prevBtn, nextBtn].forEach(btn => btn?.addEventListener('click', resetAutoplay));
+    dots.forEach(dot => dot.addEventListener('click', resetAutoplay));
+
+    // Handle touch/swipe
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    track.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    
+    track.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      if (touchStartX - touchEndX > 50) { // Swipe left
+        if (currentIndex < totalSlides - 1) {
+          currentIndex++;
+          updateUI();
+          resetAutoplay();
+        }
+      } else if (touchEndX - touchStartX > 50) { // Swipe right
+        if (currentIndex > 0) {
+          currentIndex--;
+          updateUI();
+          resetAutoplay();
+        }
+      }
+    }, { passive: true });
+  }
+</script>
+
+<style>
+  /* Custom line clamp if not using @tailwindcss/line-clamp */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
