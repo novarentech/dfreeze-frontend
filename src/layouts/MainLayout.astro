@@ -4,7 +4,7 @@ import GoogleAnalytics from '@/components/SEO/GoogleAnalytics.astro';
 import Navbar from '@/components/layout/Navbar.astro';
 import Footer from '@/components/layout/Footer.astro';
 import { Toaster } from "@/components/ui/sonner";
-import FloatingEmergencyButton from '@/components/ui/FloatingEmergencyButton';
+
 
 
 import '../styles/global.css';
@@ -30,7 +30,7 @@ const { title, description, image, type, jsonld } = Astro.props;
 
     <Footer />
     <Toaster richColors position="top-right" client:load/>
-    <FloatingEmergencyButton client:load />
   </body>
 </html>
+
 

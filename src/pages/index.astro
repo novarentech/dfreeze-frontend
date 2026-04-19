@@ -9,6 +9,8 @@ import Services from '@/components/section/Services.astro';
 import Testimonials from '@/components/section/Testimonials.astro';
 import Gallery from '@/components/section/Gallery.astro';
 import PopularArticles from '@/components/section/PopularArticles.astro';
+import FloatingEmergencyButton from '@/components/ui/FloatingEmergencyButton';
+
 
 const localBusinessSchema = {
   "@context": "https://schema.org",
@@ -63,4 +65,7 @@ const localBusinessSchema = {
 
     <!-- Lokasi Section -->
   <Location />
+
+  <FloatingEmergencyButton client:load />
 </MainLayout>
+
