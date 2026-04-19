@@ -1,0 +1,100 @@
+---
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  baseUrl: string;
+}
+
+const { currentPage, totalPages, baseUrl } = Astro.props;
+
+/**
+ * Generate the URL for a specific page number, preserving existing query params
+ */
+const getPageUrl = (page: number) => {
+  // Use a temporary base to handle relative URLs correctly
+  const url = new URL(baseUrl, "http://localhost");
+  url.searchParams.set("page", page.toString());
+  return url.pathname + url.search + url.hash;
+};
+
+/**
+ * Logic to generate a compact list of page numbers with ellipses
+ * Example: [1, 2, 3, ..., 10]
+ */
+const getPageNumbers = () => {
+  const range = [] as (number | string)[];
+  const delta = 1; // Number of pages to show on each side of the current page
+
+  for (let i = 1; i <= totalPages; i++) {
+    if (
+      i === 1 || // Always show first page
+      i === totalPages || // Always show last page
+      (i >= currentPage - delta && i <= currentPage + delta) // Show pages around current
+    ) {
+      range.push(i);
+    } else if (range[range.length - 1] !== "...") {
+      range.push("...");
+    }
+  }
+  return range;
+};
+
+const pages = getPageNumbers();
+---
+
+<nav class="flex flex-wrap justify-center items-center gap-3 mt-16" aria-label="Pagination">
+  {/* Previous Page Link */}
+  <a
+    href={currentPage > 1 ? getPageUrl(currentPage - 1) : undefined}
+    class:list={[
+      "w-11 h-11 md:w-12 md:h-12 flex items-center justify-center rounded-2xl border transition-all duration-300",
+      currentPage > 1 
+        ? "border-slate-200 text-slate-600 hover:border-primary hover:text-primary hover:bg-primary/5 active:scale-90" 
+        : "border-slate-100 text-slate-300 pointer-events-none opacity-50"
+    ]}
+    aria-label="Halaman sebelumnya"
+  >
+    <ChevronLeft size={20} />
+  </a>
+
+  {/* Page Numbers */}
+  <div class="flex items-center gap-2">
+    {pages.map((page) => (
+      page === "..." ? (
+        <span class="w-8 flex justify-center text-slate-400 font-medium">
+          {page}
+        </span>
+      ) : (
+        <a
+          href={getPageUrl(page as number)}
+          class:list={[
+            "w-11 h-11 md:w-12 md:h-12 flex items-center justify-center rounded-2xl text-sm md:text-base font-bold transition-all duration-300",
+            currentPage === page
+              ? "bg-primary text-white shadow-xl shadow-primary/30 scale-110 z-10"
+              : "border border-slate-200 text-slate-600 hover:border-primary hover:text-primary hover:bg-primary/5 active:scale-90"
+          ]}
+          aria-current={currentPage === page ? "page" : undefined}
+          aria-label={`Go to page ${page}`}
+        >
+          {page}
+        </a>
+      )
+    ))}
+  </div>
+
+  {/* Next Page Link */}
+  <a
+    href={currentPage < totalPages ? getPageUrl(currentPage + 1) : undefined}
+    class:list={[
+      "w-11 h-11 md:w-12 md:h-12 flex items-center justify-center rounded-2xl border transition-all duration-300",
+      currentPage < totalPages 
+        ? "border-slate-200 text-slate-600 hover:border-primary hover:text-primary hover:bg-primary/5 active:scale-90" 
+        : "border-slate-100 text-slate-300 pointer-events-none opacity-50"
+    ]}
+    aria-label="Halaman berikutnya"
+  >
+    <ChevronRight size={20} />
+  </a>
+</nav>

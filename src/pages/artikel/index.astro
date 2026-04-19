@@ -1,24 +1,9 @@
 ---
 export const prerender = false;
 
-import { getThumbnailUrl } from '@/lib/utils/media';
 import MainLayout from '@/layouts/MainLayout.astro';
-import { getArticles } from '@/lib/api/articles';
-import type { Article } from '@/types/article';
-import { getSummary } from '@/lib/utils/content';
 import PopularArticles from '@/components/section/PopularArticles.astro';
-
-// Fetch artikel dari Strapi (SSR)
-let articles: Article[] = [];
-let fetchError = false;
-
-try {
-  articles = await getArticles();
-} catch (err) {
-  console.error(err);
-  fetchError = true;
-}
-
+import OtherArticles from '@/components/section/OtherArticles.astro';
 ---
 
 <MainLayout
@@ -26,120 +11,23 @@ try {
   description="Baca artikel dan tips kesehatan hewan peliharaan dari dokter hewan berpengalaman DFreeze Vet Clinic."
 >
   <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-  <!-- Header -->
-  <section class="py-14 border-b border-slate-100">
-    <div class="">
-      <span class="text-primary text-sm font-semibold uppercase tracking-widest">Artikel</span>
-      <h1 class="mt-3 text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight">
-        Tips & Informasi Seputar Kesehatan Hewan Peliharaan
-      </h1>
-      <p class="mt-4 text-lg text-slate-500 leading-relaxed">
-Temukan artikel-artikel pilihan dan tips perawatan harian hingga panduan menghadapi kondisi darurat.
-      </p>
-    </div>
-  </section>
-
-  <!-- Artikel Populer -->
-   <PopularArticles client:load/>
-
-
-  <!-- Artikel Baru -->
-
-  <!-- Artikel Lain -->
-  <!-- Content -->
-  <section class="py-14">
-    {fetchError && (
-      <div class="rounded-2xl bg-amber-50 border border-amber-200 p-6 flex items-start gap-4 mb-10">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 mt-0.5">
-          <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
-          <path d="M12 9v4"/><path d="M12 17h.01"/>
-        </svg>
-        <div>
-          <p class="font-semibold text-amber-800">Tidak dapat memuat artikel</p>
-          <p class="text-sm text-amber-700 mt-1">Layanan artikel sedang tidak tersedia. Silakan coba lagi nanti.</p>
-        </div>
+    <!-- Header -->
+    <header class="py-14 border-b border-slate-100">
+      <div class="max-w-4xl">
+        <span class="text-primary text-sm font-semibold uppercase tracking-widest">Pusat Informasi</span>
+        <h1 class="mt-3 text-3xl md:text-5xl font-extrabold text-slate-900 leading-tight tracking-tight">
+          Tips & Informasi Kesehatan Hewan
+        </h1>
+        <p class="mt-4 text-lg md:text-xl text-slate-500 leading-relaxed max-w-2xl">
+          Edukasi terbaik untuk pemilik hewan kesayangan, dari tips harian hingga panduan medis darurat.
+        </p>
       </div>
-    )}
+    </header>
 
-    {articles.length === 0 && !fetchError && (
-      <div class="text-center py-20">
-        <div class="w-20 h-20 mx-auto rounded-full bg-slate-100 flex items-center justify-center mb-5">
-          <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/>
-          </svg>
-        </div>
-        <h3 class="text-xl font-semibold text-slate-700">Belum ada artikel</h3>
-        <p class="text-slate-400 mt-2">Artikel akan segera hadir. Pantau terus!</p>
-      </div>
-    )}
+    <PopularArticles />
 
-    {articles.length > 0 && (
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
-        {articles.map((article) => {
-          const thumbnailUrl = getThumbnailUrl(article.thumbnail);
-          const summary = getSummary(article.content);
-          const slug = article.documentId; // Strapi v5: gunakan documentId sebagai slug
-          const publishedDate = article.publishedAt
-            ? new Date(article.publishedAt).toLocaleDateString('id-ID', {
-                year: 'numeric', month: 'long', day: 'numeric',
-              })
-            : null;
 
-          return (
-            <a
-              href={`/artikel/${slug}`}
-              class="group block bg-white rounded-2xl border border-slate-200 overflow-hidden hover:border-blue-300 hover:shadow-xl transition-all duration-300"
-            >
-              {/* Thumbnail */}
-              <div class="aspect-video overflow-hidden bg-linear-to-br from-blue-50 to-sky-100">
-                {thumbnailUrl ? (
-                  <img
-                    src={thumbnailUrl}
-                    alt={article.thumbnail?.alternativeText ?? article.title ?? 'Artikel'}
-                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    loading="lazy"
-                  />
-                ) : (
-                  <div class="w-full h-full flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
-                    </svg>
-                  </div>
-                )}
-              </div>
 
-              {/* Card Body */}
-              <div class="p-6">
-                {article.category && (
-                  <span class="inline-block text-xs font-medium text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full mb-3 capitalize">
-                    {article.category}
-                  </span>
-                )}
-                <h2 class="font-bold text-slate-900 text-lg leading-snug group-hover:text-blue-700 transition-colors line-clamp-2">
-                  {article.title ?? 'Tanpa Judul'}
-                </h2>
-                {summary && (
-                  <p class="mt-2 text-sm text-slate-500 leading-relaxed line-clamp-3">
-                    {summary}
-                  </p>
-                )}
-                <div class="mt-4 flex items-center justify-between gap-2">
-                  {publishedDate && (
-                    <time class="text-xs text-slate-400">{publishedDate}</time>
-                  )}
-                  <span class="text-blue-600 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all ml-auto shrink-0">
-                    Baca
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
-                    </svg>
-                  </span>
-                </div>
-              </div>
-            </a>
-          );
-        })}
-      </div>
-    )}
-  </section>
+    <OtherArticles />
   </div>
 </MainLayout>

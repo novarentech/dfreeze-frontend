@@ -53,3 +53,19 @@ export interface Article {
   publishedAt: string | null;
   thumbnail: StrapiThumbnail | null;
 }
+
+export interface StrapiPagination {
+  page: number;
+  pageSize: number;
+  pageCount: number;
+  total: number;
+}
+
+export interface StrapiMeta {
+  pagination: StrapiPagination;
+}
+
+export interface PaginatedArticles {
+  data: Article[];
+  meta: StrapiMeta;
+}

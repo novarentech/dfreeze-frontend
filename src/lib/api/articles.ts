@@ -10,7 +10,23 @@ export interface GetArticlesOptions {
   sort?: string;
 }
 
-async function fetchArticlesFromAPI(options: GetArticlesOptions = {}): Promise<Article[]> {
+export interface StrapiPagination {
+  page: number;
+  pageSize: number;
+  pageCount: number;
+  total: number;
+}
+
+export interface StrapiMeta {
+  pagination: StrapiPagination;
+}
+
+export interface PaginatedArticles {
+  data: Article[];
+  meta: StrapiMeta;
+}
+
+async function fetchArticlesFromAPI(options: GetArticlesOptions = {}): Promise<PaginatedArticles> {
   const { pageSize, page, sort } = options;
   
   const params = new URLSearchParams();
@@ -34,9 +50,16 @@ async function fetchArticlesFromAPI(options: GetArticlesOptions = {}): Promise<A
   }
 
   const json = await res.json();
-  return Array.isArray(json.data) ? json.data : [];
+  
+  return {
+    data: Array.isArray(json.data) ? json.data : [],
+    meta: json.meta || { pagination: { page: 1, pageSize: 1, pageCount: 1, total: 0 } }
+  };
 }
 
+/**
+ * Get articles as a simple array for backward compatibility
+ */
 export async function getArticles(options: GetArticlesOptions = {}): Promise<Article[]> {
   const cacheKey = `articles-${JSON.stringify(options)}`;
 
@@ -44,14 +67,38 @@ export async function getArticles(options: GetArticlesOptions = {}): Promise<Art
   if (cached) return cached;
 
   try {
-    const data = await fetchArticlesFromAPI(options);
-    setCache(cacheKey, data, CACHE_TTL);
-    return data;
+    const response = await fetchArticlesFromAPI(options);
+    setCache(cacheKey, response.data, CACHE_TTL);
+    return response.data;
   } catch (err) {
     console.error(err);
     if (cached) return cached;
 
     return [];
+  }
+}
+
+/**
+ * Get articles with pagination metadata
+ */
+export async function getPaginatedArticles(options: GetArticlesOptions = {}): Promise<PaginatedArticles> {
+  const cacheKey = `articles-paginated-${JSON.stringify(options)}`;
+
+  const cached = getCache<PaginatedArticles>(cacheKey);
+  if (cached) return cached;
+
+  try {
+    const response = await fetchArticlesFromAPI(options);
+    setCache(cacheKey, response, CACHE_TTL);
+    return response;
+  } catch (err) {
+    console.error("Fetch paginated articles error:", err);
+    if (cached) return cached;
+
+    return {
+      data: [],
+      meta: { pagination: { page: 1, pageSize: 1, pageCount: 1, total: 0 } }
+    };
   }
 }
 
