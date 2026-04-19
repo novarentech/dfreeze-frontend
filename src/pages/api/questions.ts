@@ -109,3 +109,48 @@ export async function POST({ request, clientAddress }: APIContext) {
     );
   }
 }
+
+export async function GET({ url }: APIContext) {
+  try {
+    const query = url.searchParams.get("query");
+    const page = url.searchParams.get("page") || "1";
+    const pageSize = url.searchParams.get("pageSize") || "5";
+
+    const params = new URLSearchParams();
+    
+    if (query) {
+      params.append("filters[question][$containsi]", query);
+    }
+    
+    params.append("pagination[page]", page);
+    params.append("pagination[pageSize]", pageSize);
+    
+
+    const { API_BACKEND_URL: apiUrl, API_SECRET_KEY: apiKey } = ENV_SERVER;
+
+    const res = await fetch(`${apiUrl}/questions?${params.toString()}`, {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
+    });
+
+    if (!res.ok) {
+      return new Response(
+        JSON.stringify({ success: false, message: "Gagal mengambil data pertanyaan." }),
+        { status: res.status, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    const data = await res.json();
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    console.error("GET Questions API Error:", error);
+    return new Response(
+      JSON.stringify({ success: false, message: "Terjadi kesalahan server internal." }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  }
+}

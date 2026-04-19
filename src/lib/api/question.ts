@@ -1,42 +1,39 @@
-import { ENV_SERVER } from "@/config/env.server";
 import { getCache, setCache } from "@/lib/cache";
 import type { Question } from "@/types/question";
 import type { QuestionSubmissionValues } from "@/types/question_submission";
-
 
 const CACHE_TTL = 60 * 1000; // 1 min
 
 export interface GetQuestionsOptions {
   query?: string;
+  page?: number;
+  pageSize?: number;
 }
 
 /**
- * Fetch questions from the backend with optional filter
- * Example URL: questions?filters[question][$containsi]=query
+ * Fetch questions from the internal API endpoint.
+ * This is safe to call from the client side.
  */
 export async function getQuestions(options: GetQuestionsOptions = {}): Promise<Question[]> {
-  const { query } = options;
-  const cacheKey = `questions-${query || "all"}`;
+  const { query, page, pageSize } = options;
+  const cacheKey = `questions-${query || "all"}-${page || 1}-${pageSize || 25}`;
 
   const cached = getCache<Question[]>(cacheKey);
   if (cached) return cached;
 
   try {
     const params = new URLSearchParams();
-    
-    // Add filter if query is provided
     if (query) {
-      params.append("filters[question][$containsi]", query);
+      params.append("query", query);
+    }
+    if (page) {
+      params.append("page", page.toString());
+    }
+    if (pageSize) {
+      params.append("pageSize", pageSize.toString());
     }
 
-    const res = await fetch(
-      `${ENV_SERVER.API_BACKEND_URL}/questions?${params.toString()}`,
-      {
-        headers: {
-          Authorization: `Bearer ${ENV_SERVER.API_SECRET_KEY}`,
-        },
-      }
-    );
+    const res = await fetch(`/api/questions?${params.toString()}`);
 
     if (!res.ok) {
       throw new Error(`Failed to fetch questions: ${res.statusText}`);
@@ -49,10 +46,7 @@ export async function getQuestions(options: GetQuestionsOptions = {}): Promise<Q
     return data;
   } catch (error) {
     console.error("Fetch questions error:", error);
-    
-    // If request fails, try to return cached data even if potentially stale
     if (cached) return cached;
-    
     return [];
   }
 }
@@ -77,4 +71,3 @@ export async function createQuestion(data: QuestionSubmissionValues) {
 
   return responseData;
 }
-
