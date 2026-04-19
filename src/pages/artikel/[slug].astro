@@ -84,13 +84,6 @@ const articleSchema = {
         <span class="text-slate-600 truncate max-w-[200px]">{article.title}</span>
       </nav>
 
-      <!-- Category badge -->
-      {article.category && (
-        <span class="inline-block text-xs font-medium text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full mb-4 capitalize">
-          {article.category}
-        </span>
-      )}
-
       <!-- Title -->
       <h1 class="text-3xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-4">
         {article.title}
