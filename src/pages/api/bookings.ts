@@ -1,15 +1,8 @@
 import type { APIContext } from 'astro';
-import { z } from 'zod';
 import { ENV_SERVER } from '@/config/env.server';
+import { bookingSchema } from '@/types/booking';
 
 export const prerender = false;
-
-// --- 1. Zod Body Validation Schema ---
-const bookingSchema = z.object({
-  namaPemilik: z.string().min(2, "Nama Pemilik minimal 2 karakter.").trim(),
-  namaHewan: z.string().min(2, "Nama Hewan minimal 2 karakter.").trim(),
-  tanggalBooking: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Format tanggal harus YYYY-MM-DD"),
-});
 
 // --- 2. In-Memory Rate Limiter ---
 // Menyimpan riwayat akses IP dengan jumlah hit & reset time

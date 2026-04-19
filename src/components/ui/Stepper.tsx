@@ -7,6 +7,7 @@ interface StepperProps extends HTMLAttributes<HTMLDivElement> {
   initialStep?: number;
   onStepChange?: (step: number) => void;
   onFinalStepCompleted?: () => void;
+  onBeforeNext?: (step: number) => boolean | Promise<boolean>;
   stepCircleContainerClassName?: string;
   stepContainerClassName?: string;
   contentClassName?: string;
@@ -28,6 +29,7 @@ export default function Stepper({
   initialStep = 1,
   onStepChange = () => {},
   onFinalStepCompleted = () => {},
+  onBeforeNext,
   stepCircleContainerClassName = '',
   stepContainerClassName = '',
   contentClassName = '',
@@ -56,23 +58,31 @@ export default function Stepper({
     }
   };
 
+  const validateAndMove = async (newStep: number) => {
+    if (newStep > currentStep) {
+      if (onBeforeNext) {
+        const isValid = await onBeforeNext(currentStep);
+        if (!isValid) return;
+      }
+    }
+    setDirection(newStep > currentStep ? 1 : -1);
+    updateStep(newStep);
+  };
+
   const handleBack = () => {
     if (currentStep > 1) {
-      setDirection(-1);
-      updateStep(currentStep - 1);
+      validateAndMove(currentStep - 1);
     }
   };
 
   const handleNext = () => {
     if (!isLastStep) {
-      setDirection(1);
-      updateStep(currentStep + 1);
+      validateAndMove(currentStep + 1);
     }
   };
 
   const handleComplete = () => {
-    setDirection(1);
-    updateStep(totalSteps + 1);
+    validateAndMove(totalSteps + 1);
   };
 
   return (
@@ -94,8 +104,7 @@ export default function Stepper({
                     step: stepNumber,
                     currentStep,
                     onStepClick: clicked => {
-                      setDirection(clicked > currentStep ? 1 : -1);
-                      updateStep(clicked);
+                      validateAndMove(clicked);
                     }
                   })
                 ) : (
@@ -104,8 +113,7 @@ export default function Stepper({
                     disableStepIndicators={disableStepIndicators}
                     currentStep={currentStep}
                     onClickStep={clicked => {
-                      setDirection(clicked > currentStep ? 1 : -1);
-                      updateStep(clicked);
+                      validateAndMove(clicked);
                     }}
                   />
                 )}
