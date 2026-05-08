@@ -89,8 +89,13 @@ export async function POST({ request, clientAddress }: APIContext) {
     });
 
     if (backendRes.ok) {
+      let responseData = {};
+      try {
+        responseData = await backendRes.json();
+      } catch (e) {}
+
       return new Response(
-        JSON.stringify({ success: true, message: "Booking berhasil dikirim." }),
+        JSON.stringify({ success: true, message: "Booking berhasil dikirim.", ...responseData }),
         { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }

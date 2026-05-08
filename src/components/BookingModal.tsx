@@ -75,7 +75,10 @@ export default function BookingModal({ variant = "default" }: { variant?: "defau
       const response = await createBooking(data);
 
       if (response?.meta?.whatsapp_url) {
-        window.open(response.meta.whatsapp_url, "_blank");
+        const newWindow = window.open(response.meta.whatsapp_url, "_blank");
+        if (!newWindow) {
+          window.location.href = response.meta.whatsapp_url;
+        }
       }
 
       toast.success("Booking Berhasil!", {
