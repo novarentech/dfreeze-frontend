@@ -72,7 +72,11 @@ export default function BookingModal({ variant = "default" }: { variant?: "defau
     setIsLoading(true);
 
     try {
-      await createBooking(data);
+      const response = await createBooking(data);
+
+      if (response?.meta?.whatsapp_url) {
+        window.open(response.meta.whatsapp_url, "_blank");
+      }
 
       toast.success("Booking Berhasil!", {
         description: "Tim kami akan segera menghubungi Anda untuk konfirmasi.",
