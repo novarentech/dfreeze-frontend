@@ -1,0 +1,64 @@
+---
+import { Image } from "astro:assets";
+import specialistImg from "@/assets/image/specialistProfile.jpg";
+import { Badge } from "../ui/badge";
+
+const { id = "specialist" } = Astro.props;
+---
+
+<section id={id} class="py-20 bg-white">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-12">
+      <p class="text-primary text-sm font-bold uppercase tracking-widest mb-3">KEAHLIAN SPESIALIS</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-slate-800 leading-tight">
+        Spesialis Bedah & Ortopedi Hewan di Yogyakarta
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+      <!-- Image Column -->
+      <div class="lg:col-span-4 relative group">
+        <div class="rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 group-hover:shadow-primary/20 group-hover:-translate-y-2">
+          <Image 
+            src={specialistImg} 
+            alt="Prof. Dr. drh. Dhirgo Adji, MP" 
+            class="w-full h-auto object-cover aspect-4/5 transition-transform duration-700 group-hover:scale-105"
+          />
+        </div>
+        <!-- Decorative element -->
+        <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-primary/5 rounded-full blur-3xl -z-10 group-hover:bg-primary/10 transition-colors duration-500"></div>
+      </div>
+
+      <!-- Content Column -->
+      <div class="lg:col-span-8 space-y-6 py-10">
+        <div class="space-y-2">
+          <h3 class="text-3xl font-bold text-slate-800 tracking-tight">Prof. Dr. drh. Dhirgo Adji, MP</h3>
+          <p class="text-slate-800 text-lg italic">Founder & Veterinary Orthopedic Surgeon</p>
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+          <Badge className="bg-cyan-50 text-cyan-600 border-none px-4 py-1.5 text-xs font-semibold rounded-full hover:bg-cyan-100 transition-colors cursor-default">
+            Pendiri Asosiasi Dokter Bedah Veteriner Indonesia (ADBVI)
+          </Badge>
+          <Badge className="bg-orange-50 text-orange-600 border-none px-4 py-1.5 text-xs font-semibold rounded-full hover:bg-orange-100 transition-colors cursor-default">
+            Guru Besar FKH UGM
+          </Badge>
+          <Badge className="bg-rose-50 text-rose-600 border-none px-4 py-1.5 text-xs font-semibold rounded-full hover:bg-rose-100 transition-colors cursor-default">
+            Spesialis Bedah & Ortopedi Hewan Indonesia
+          </Badge>
+        </div>
+
+        <div class="w-full h-px bg-gray-200 my-4"></div>
+
+        <div class="space-y-4 text-slate-600 text-lg leading-relaxed">
+          <p>
+            Prof. Dr. drh. Dhirgo Adji, M.P. dikenal sebagai salah satu dokter bedah hewan yang menangani berbagai kasus ortopedi dan bedah veteriner rujukan dari berbagai daerah di Indonesia, khususnya untuk kondisi tulang, sendi, dan tindakan bedah intensif.
+          </p>
+          <p>
+            Beliau juga merupakan pendiri ADBVI (Asosiasi Dokter Bedah Veteriner Indonesia) yang berfokus pada pengembangan praktik bedah veteriner di Indonesia.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

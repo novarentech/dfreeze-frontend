@@ -16,29 +16,21 @@ import dentalImg from "@/assets/image/services/perawatan_mulut.jpg";
 
 const services = [
   {
+    title: "Bedah Jaringan Lunak dan Tulang (Ortopedi).",
+    image: surgeryImg,
+  },
+  {
     title: "Pemeriksaan Umum",
     image: examinationImg,
   },
   {
-    title: "Vaksinasi",
+    title: "Vaksinasi Anjing dan Kucing",
     image: vaccinationImg,
   },
   {
-    title: "Bedah & Operasi",
-    image: surgeryImg,
-  },
-  {
-    title: "Grooming & Spa",
-    image: groomingImg,
-  },
-  {
-    title: "Konsultasi Nutrisi",
-    image: nutritionImg,
-  },
-  {
-    title: "Perawatan Gigi",
+    title: "Perawatan Gigi, Scaling dan Control",
     image: dentalImg,
-  }
+  },
 ];
 
 const { id = "services" } = Astro.props;
@@ -80,14 +72,14 @@ const { id = "services" } = Astro.props;
     </div>
 
     <!-- Carousel Desktop Nav -->
-    <div class="hidden md:flex justify-center gap-4">
+    <!-- <div class="hidden md:flex justify-center gap-4">
       <button id="prev-service" class="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center text-white hover:border-primary hover:text-white/80 transition-all bg-primary shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
         <ChevronLeft size={24} />
       </button>
       <button id="next-service" class="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center text-white hover:border-primary hover:text-white/80 transition-all bg-primary shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
         <ChevronRight size={24} />
       </button>
-    </div>
+    </div> -->
 
     <!-- Mobile Indicator Dots -->
     <div class="flex md:hidden justify-center gap-2 mt-4 text-primary">
