@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import aboutUs from "@/assets/image/aboutUs.png";
 import { CheckCircle2 } from "lucide-react";
+import { Badge } from "../ui/badge";
 
 const highlights = [
   "Tim Dokter Hewan Berpengalaman More than 10 Years",
@@ -25,18 +26,13 @@ const { id = "about" } = Astro.props;
             Dari Sebuah Mimpi Kecil, Menjadi <span class="text-primary">Kepercayaan</span> Banyak Keluarga
           </h2>
           <p class="text-slate-600 text-lg leading-relaxed max-w-2xl mx-auto lg:mx-0">
-            Berdiri sejak tahun 2014, D'Freeze Vet Clinic telah menjadi mitra terpercaya bagi ribuan pemilik hewan peliharaan di Yogyakarta. Kami percaya bahwa setiap hewan layak mendapatkan perawatan medis terbaik dengan standar profesionalisme yang tinggi dan sentuhan kasih sayang.
+            Berawal dari ruang praktik kecil, kini kami berkembang menjadi klinik lengkap dengan fasilitas    diagnostik, ruang rawat inap, dan tim medis multidisiplin yang berdedikasi. Sejak berdiri pada tahun 2014, kami telah dipercaya oleh pemilik hewan di Sleman dan sekitarnya, serta melayani berbagai pasien rujukan dari berbagai daerah di seluruh Indonesia. Dengan pengalaman bertahun-tahun dan komitmen terhadap pelayanan terbaik, kami terus berupaya memberikan penanganan medis yang profesional dan penuh perhatian bagi setiap hewan kesayangan.
           </p>
         </div>
         <div class="flex flex-row lg:justify-start justify-center items-center gap-8 text-primary">
-            <div class="text-center space-y-2">
-                <p class="text-5xl font-bold">50+</p>
-                <p class="text-sm font-medium uppercase tracking-wide">Pasien Tiap Bulan</p>
-            </div>
-            <div class="text-center space-y-2">
-                <p class="text-5xl font-bold">10+</p>
-                <p class="text-sm font-medium uppercase tracking-wide">Tahun Pengalaman</p>
-            </div>
+          <Badge className="bg-primary/10 text-primary text-xs sm:text-sm hover:bg-primary/80 font-semibold">Pelayanan Sepenuh Hati</Badge>
+          <Badge className="bg-primary/10 text-primary text-xs sm:text-sm hover:bg-primary/80 font-semibold">Teknologi Modern</Badge>
+          <Badge className="bg-primary/10 text-primary text-xs sm:text-sm hover:bg-primary/80 font-semibold">Tim Ahli Multidisiplin</Badge>
         </div>
     </div>
     
